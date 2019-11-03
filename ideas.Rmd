@@ -12,6 +12,17 @@ output:
 
 ## 1
 
+This is the College Scorecard Data Set. It has information on higher education institutions in the US, including: information about the institution, academics, admissions, costs, student body, financial aid, and completion. It also has data on earnings post-graduation. This is only the most recent data available (I belive it is 2017). There is another file that has a glossary for all of the terms, since they are abbreviated in this data set. I will work on uploading it. -Max
+```{r}
+library(readr)
+
+Most_Recent_Cohorts_Scorecard_Elements <- 
+  read_csv("C:/Users/maxda/Downloads/Most-Recent-Cohorts-Scorecard-Elements.csv")
+
+View(Most_Recent_Cohorts_Scorecard_Elements)
+```
+
+
 ## 2
 
 ## 3
