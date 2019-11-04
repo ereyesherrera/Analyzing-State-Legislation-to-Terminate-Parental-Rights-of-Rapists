@@ -10,6 +10,20 @@ output:
     toc_float: yes
 ---
 
+```{r warning=FALSE, message=FALSE}
+library(gganimate)
+library(ggmap)
+library(ggridges)
+library(ggthemes)
+library(knitr)
+library(leaflet)
+library(lubridate)
+library(plotly)
+library(scales)
+library(tidyverse)
+```
+
+
 ## 1
 
 This is the College Scorecard Data Set. It has information on higher education institutions in the US, including: information about the institution, academics, admissions, costs, student body, financial aid, and completion. It also has data on earnings post-graduation. This is only the most recent data available (I belive it is 2017). There is another file that has a glossary for all of the terms, since they are abbreviated in this data set. I will work on uploading it. -Max
@@ -24,6 +38,19 @@ View(Most_Recent_Cohorts_Scorecard_Elements)
 
 
 ## 2
+(Edwin)
+
+With the recent CA wildfires going on, I was interested in analyzing the history of wildfires in California. I found [this Buzzfeed article](https://www.buzzfeednews.com/article/peteraldhous/california-wildfires-people-climate) that did some analysis, but I think we would be able to expand it a bit more.
+
+Buzzfeed provided the code to clean up and visualize the data the way they did [at this page](https://buzzfeednews.github.io/2018-07-wildfire-trends/) and they also provided their Github repo with their data [here](https://github.com/BuzzFeedNews/2018-07-wildfire-trends).
+
+They retrieved their information from the [California Department of Forestry and Fire Protection (Cal Fire) Fire Perimeters Geodatabase](https://frap.fire.ca.gov/frap-projects/fire-perimeters/) and this will be a good resource since it explains all the variable names.
+
+```{r, warning=FALSE, message=FALSE}
+ca_fires <- read_csv("https://raw.githubusercontent.com/BuzzFeedNews/2018-07-wildfire-trends/master/data/calfire_frap.csv")
+ca_damage <- read_csv("https://raw.githubusercontent.com/BuzzFeedNews/2018-07-wildfire-trends/master/data/calfire_damage.csv")
+```
+
 
 ## 3
 
