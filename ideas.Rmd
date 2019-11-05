@@ -52,6 +52,27 @@ ca_fires <- read_csv("https://raw.githubusercontent.com/BuzzFeedNews/2018-07-wil
 ca_damage <- read_csv("https://raw.githubusercontent.com/BuzzFeedNews/2018-07-wildfire-trends/master/data/calfire_damage.csv")
 ```
 
+Number of days each fire burned
+```{r}
+ca_fires %>% 
+  mutate(total_days = cont_date - alarm_date) %>% 
+  
+ggplot(aes(x = total_days)) +
+  geom_histogram() +
+  xlim(0, 180) +
+  ylim(0, 1000) 
+```
+
+Causes of CA Fires - come back and put in the name for each number
+```{r}
+ggplot(ca_fires, aes(x = cause)) +
+  geom_bar() +
+  coord_flip() +
+  labs(title = "Causes of CA Fires", x = "Causes of Fire", y = "Number of Fires")
+```
+
+
+
 
 ## 3
 
