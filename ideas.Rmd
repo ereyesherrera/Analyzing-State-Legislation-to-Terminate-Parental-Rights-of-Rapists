@@ -64,6 +64,15 @@ ggplot(aes(x = total_days)) +
 ```
 
 Causes of CA Fires - come back and put in the name for each number
+
+```{r}
+cause_names <- tibble(
+  cause = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19"),
+  
+  cause_name = c("Lightning", "Equipment Use", "Smoking", "Campfire", "Debris", "Railroad", "Arson", "Playing with Fire", "Miscellaneous", "Vehicle", "Power Line", "Firefighter Training", "Non-Firefighter Training", "Unknown/Unidentified", "Structure", "Aircraft", "Volcanic", "Escaped Prescribed Burn", "Illegal Alien Campfire")
+)
+```
+
 ```{r}
 ggplot(ca_fires, aes(x = cause)) +
   geom_bar() +
