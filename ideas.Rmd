@@ -113,6 +113,14 @@ ca_fires %>%
   arrange(desc(year_)) %>%
   ggplot(aes(x = year_, y = total_acres)) +
   geom_line()
+
+ca_fires %>%
+  group_by(year_) %>%
+  summarize(total_acres = sum(gis_acres, na.rm = TRUE)) %>%
+  left_join(ca_damage, by = c("year_" = "year")) %>%
+  arrange(desc(year_)) %>%
+  ggplot(aes(x = year_, y = structures)) +
+  geom_col()
 ```
 
 ```{r}

@@ -31,14 +31,20 @@ fires <- ca_fires %>%
   group_by(year_) %>%
   summarize(total_acres = sum(gis_acres, na.rm = TRUE)) %>%
   left_join(ca_damage, by = c("year_" = "year")) %>%
-  ungroup()
+  arrange(desc(year_))
+
+# Using buzzfeeds code to vategorize fires as 3 different causes
+ca_fires <- ca_fires %>%
+  mutate(cause2 = case_when(cause == 1 | cause == 17 ~ "Natural",
+                            cause == 14 | is.na(cause) ~ "Unknown",
+                            cause != 1 | cause != 14 | cause != 17 ~ "Human"))
+
 
 
 
 ui <- fluidPage(
   sliderInput(inputId = "year", label = "Year Range",
               min = 1950, max = 2017, value = c(1950,2017),sep = ""),
-  submitButton(text = "Plot"),
   plotOutput(outputId = "acres_burned"),
   plotOutput(outputId = "structures")
 )
