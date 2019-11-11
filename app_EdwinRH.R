@@ -1,0 +1,69 @@
+library(gganimate)
+library(ggmap)
+library(ggridges)
+library(ggthemes)
+library(knitr)
+library(leaflet)
+library(lubridate)
+library(plotly)
+library(scales)
+library(tidyverse)
+library(shiny)
+library(naniar)
+
+ca_fires <- read_csv("https://raw.githubusercontent.com/BuzzFeedNews/2018-07-wildfire-trends/master/data/calfire_frap.csv")
+ca_damage <- read_csv("https://raw.githubusercontent.com/BuzzFeedNews/2018-07-wildfire-trends/master/data/calfire_damage.csv")
+
+
+cause_names <- tibble(
+  cause = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19),
+  cause_name = c("Lightning", "Equipment Use", "Smoking", "Campfire", "Debris", "Railroad", "Arson", "Playing with Fire", "Miscellaneous", "Vehicle", "Power Line", "Firefighter Training", "Non-Firefighter Training", "Unknown/Unidentified", "Structure", "Aircraft", "Volcanic", "Escaped Prescribed Burn", "Illegal Alien Campfire")
+)
+
+# This uses info above to create new column in original data set to have name for each cause
+ca_fires <- ca_fires %>%
+  left_join(cause_names, by = "cause")
+
+# Summarizing total acres a fire spanned and number of structures destroyed in year
+fires <- ca_fires %>%
+  group_by(year_) %>%
+  summarize(total_acres = sum(gis_acres, na.rm = TRUE)) %>%
+  left_join(ca_damage, by = c("year_" = "year")) %>%
+  arrange(desc(year_))
+
+
+
+
+ui <- fluidPage(
+  sliderInput(inputId = "year_", label = "Year Range",
+              min = 1950, max = 2017, value = c(1950,2017),sep = ""),
+  plotOutput(outputId = "acres_burned"),
+  plotOutput(outputId = "structures")
+)
+
+server <- function(input, output) {
+  output$acres_burned<- renderPlot({
+    fires %>%
+      ggplot(aes(x = year_, y = total_acres)) +
+      geom_point() +
+      geom_line() + 
+      labs(x = "Year", y = "Acres Burned", title = "Total Acres Burned From Fires in a Year",
+           subtitle = "1950 through 2017") +
+      scale_x_continuous(limits = input$year_) +
+      theme_minimal()
+  })
+  
+  output$structures <- renderPlot({
+    fires %>%
+      drop_na(structures) %>%
+      ggplot(aes(x = year_, y = factor(structures))) +
+      geom_col(fill = "black") + 
+      labs(x = "Year", y = "Number of Structures", title = "Total Stuctures Burned from Fires",
+           subtitle = "1989 through 2017") +
+      scale_x_continuous(limits = input$year_) +
+      theme_minimal()
+  })
+
+}
+
+shinyApp(ui = ui, server = server)
