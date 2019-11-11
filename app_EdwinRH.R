@@ -36,9 +36,9 @@ fires <- ca_fires %>%
 
 
 ui <- fluidPage(
+  h1("Visualizing Damage of CA Fires"),
   sliderInput(inputId = "year", label = "Year Range",
               min = 1950, max = 2017, value = c(1950,2017),sep = ""),
-  submitButton(text = "Plot"),
   plotOutput(outputId = "acres_burned"),
   plotOutput(outputId = "structures")
 )
@@ -62,7 +62,7 @@ server <- function(input, output) {
       geom_col(fill = "black") + 
       labs(x = "Year", y = "Number of Structures", title = "Total Stuctures Burned from Fires",
            subtitle = "1989 through 2017") +
-      scale_x_continuous(limits = input$year) +
+      scale_x_continuous(limits = input$year + c(-1,1)) +
       theme_minimal()
   })
   
