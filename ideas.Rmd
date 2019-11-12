@@ -140,6 +140,7 @@ ca_fires %>%
   coord_flip() +
   labs(title = "Causes of CA Fires", x = "Causes of Fire", y = "Number of Fires")
 ```
+<<<<<<< HEAD
 
 ```{r}
 # With this visualization, we see that the values for 2007-2017 are increased across the board. Whereas in 1950-1960, about 400 wildfires were attributed to human intervention, in the latter dataset, that number is closer to 1700. Similarly, natural fires have increased to 1000 from 200.
@@ -156,5 +157,19 @@ ca_fires %>%
   count() %>%
   ggplot(aes(x = cause2, y = n)) +
   geom_col()
+```
+
+Was trying to look at the length of fire vs cause of fire. However, there are ~7000 fires that are missing data on their alarm/cont date. 
+```{r}
+ca_fires %>% 
+  mutate(total_days = cont_date - alarm_date) %>% 
+  
+ggplot(aes(x = total_days, fill = cause2)) +
+  geom_histogram() +
+  facet_wrap(vars(cause2)) +
+  xlim(0,200) +
+  ylim(0, 500) +
+  labs(y = "Total Number of Fires")
+
 ```
 
