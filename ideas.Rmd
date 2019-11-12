@@ -140,3 +140,21 @@ ca_fires %>%
   coord_flip() +
   labs(title = "Causes of CA Fires", x = "Causes of Fire", y = "Number of Fires")
 ```
+
+```{r}
+# With this visualization, we see that the values for 2007-2017 are increased across the board. Whereas in 1950-1960, about 400 wildfires were attributed to human intervention, in the latter dataset, that number is closer to 1700. Similarly, natural fires have increased to 1000 from 200.
+ca_fires %>%
+  filter(year_ %in% c(seq(1950,1960, 1))) %>%
+  group_by(cause2) %>%
+  count() %>%
+  ggplot(aes(x = cause2, y = n)) +
+  geom_col()
+
+ca_fires %>%
+  filter(year_ %in% c(seq(2007,2017, 1))) %>%
+  group_by(cause2) %>%
+  count() %>%
+  ggplot(aes(x = cause2, y = n)) +
+  geom_col()
+```
+
