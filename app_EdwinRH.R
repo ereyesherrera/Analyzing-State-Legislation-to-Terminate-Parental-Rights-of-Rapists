@@ -33,39 +33,70 @@ fires <- ca_fires %>%
   left_join(ca_damage, by = c("year_" = "year")) %>%
   ungroup()
 
+colors <- colors()
 
+# Function to check to make sure color is in list of available colors
+not_color <- function(input) {
+  input <- tolower(input)
+  if (!input %in% colors) {
+    "Choose another color"
+  } else if (input == "") {
+    "Choose another color"
+  } else {
+    NULL
+  }
+}
 
 ui <- fluidPage(
   h1("Visualizing Damage of CA Fires"),
-  sliderInput(inputId = "year", label = "Year Range",
-              min = 1950, max = 2017, value = c(1950,2017),sep = ""),
-  plotOutput(outputId = "acres_burned"),
+  h3(tags$a(href = "https://github.com/BuzzFeedNews/2018-07-wildfire-trends", 
+            "Click here to view data source!")),
+  p("Note: Data on structures destroyed only available between 1989-2017"),
+  sidebarLayout(sidebarPanel(sliderInput(inputId = "year", label = "Select Year Range:",
+              min = 1950, max = 2017, value = c(2007, 2012), step = 1, ticks = FALSE, sep = ""), 
+              textInput("color", "Choose Color of Plot:", value = "", placeholder = "Red"),
+              submitButton(text = "Plot")),
+    mainPanel(plotOutput(outputId = "acres_burned"),
   plotOutput(outputId = "structures")
+)
+)
 )
 
 server <- function(input, output) {
   output$acres_burned<- renderPlot({
-    fires %>%
+    validate(
+    not_color(input$color) #display error messages
+  )
+
+   fires %>%
       ggplot(aes(x = year_, y = total_acres)) +
-      geom_point() +
-      geom_line() + 
+      geom_point(color = tolower(input$color)) +
+      geom_line(color = tolower(input$color)) + 
       labs(x = "Year", y = "Acres Burned", title = "Total Acres Burned From Fires in a Year",
            subtitle = "1950 through 2017") +
       scale_x_continuous(limits = input$year) +
-      theme_minimal()
-  })
+      theme_minimal() +
+     theme(plot.title = element_text(face = "bold", size = 15),
+           plot.subtitle = element_text(face = "bold", size = 12))
+  }
+  )
   
   output$structures <- renderPlot({
+    validate(
+      not_color(input$color) # display error messages
+    )
     fires %>%
       drop_na(structures) %>%
       ggplot(aes(x = year_, y = structures)) +
-      geom_col(fill = "black") + 
+      geom_col(fill = tolower(input$color)) + 
       labs(x = "Year", y = "Number of Structures", title = "Total Stuctures Burned from Fires",
            subtitle = "1989 through 2017") +
       scale_x_continuous(limits = input$year + c(-1,1)) +
-      theme_minimal()
-  })
-  
+      theme_minimal() +
+      theme(plot.title = element_text(face = "bold", size = 15),
+            plot.subtitle = element_text(face = "bold", size = 12))
+  }
+  )
 }
 
 shinyApp(ui = ui, server = server)

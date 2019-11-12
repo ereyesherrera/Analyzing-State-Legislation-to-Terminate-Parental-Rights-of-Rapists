@@ -1,0 +1,13 @@
+name: CA_Fires
+title: CA_Fires
+username:
+account: ereyesherrera
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1457308
+bundleId: 2581896
+url: https://ereyesherrera.shinyapps.io/CA_Fires/
+when: 1573528273.8648
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: CollegeScorecardDataDictionary.xlsx|ideas.html|ideas.md|ideas.Rmd|README.md|ideas_files/figure-html/unnamed-chunk-10-1.png|ideas_files/figure-html/unnamed-chunk-12-1.png|ideas_files/figure-html/unnamed-chunk-4-1.png|ideas_files/figure-html/unnamed-chunk-7-1.png|ideas_files/figure-html/unnamed-chunk-8-1.png
