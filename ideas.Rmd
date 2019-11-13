@@ -22,6 +22,16 @@ library(scales)
 library(tidyverse)
 ```
 
+## Other Interesting datasets
+World Suicide Rates 1985-2016
+https://www.kaggle.com/russellyates88/suicide-rates-overview-1985-to-2016
+
+World Earthquakes 1965-2016
+https://www.kaggle.com/usgs/earthquake-database
+
+World Happinness 2015-2017
+https://www.kaggle.com/unsdsn/world-happiness
+
 
 ## 1
 (Max)
