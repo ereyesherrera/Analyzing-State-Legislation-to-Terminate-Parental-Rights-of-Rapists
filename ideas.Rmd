@@ -182,6 +182,7 @@ ggplot(aes(x = total_days, fill = cause2)) +
   ylim(0, 500) +
   labs(y = "Total Number of Fires")
 ```
+
 ```{r}
 #quick plot showing how total gis acres has been increasing. 
 ca_fires %>%
