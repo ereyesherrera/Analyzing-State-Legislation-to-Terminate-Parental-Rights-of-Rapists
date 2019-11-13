@@ -143,7 +143,7 @@ ca_fires %>%
 <<<<<<< HEAD
 
 ```{r}
-# With this visualization, we see that the values for 2007-2017 are increased across the board. Whereas in 1950-1960, about 400 wildfires were attributed to human intervention, in the latter dataset, that number is closer to 1700. Similarly, natural fires have increased to 1000 from 200.
+# With this visualization, we see that the values for 2007-2017 are increased across the board. Whereas in 1950-1960, about 400 wildfires were attributed to human intervention, in the latter dataset, that number is closer to 1700. Similarly, natural fires have increased to 1000 from 200.Also, number and proportion of unknown fires has decreased which may point to better detection. 
 ca_fires %>%
   filter(year_ %in% c(seq(1950,1960, 1))) %>%
   group_by(cause2) %>%
@@ -159,8 +159,9 @@ ca_fires %>%
   geom_col()
 ```
 
-Was trying to look at the length of fire vs cause of fire. However, there are ~7000 fires that are missing data on their alarm/cont date. 
+
 ```{r}
+#Was trying to look at the length of fire vs cause of fire. However, there are ~7000 fires that are missing data on their alarm/cont date. 
 ca_fires %>% 
   mutate(total_days = cont_date - alarm_date) %>% 
   
@@ -170,6 +171,19 @@ ggplot(aes(x = total_days, fill = cause2)) +
   xlim(0,200) +
   ylim(0, 500) +
   labs(y = "Total Number of Fires")
-
 ```
+```{r}
+#quick plot showing how total gis acres has been increasing. 
+ca_fires %>%
+  group_by(year_) %>%
+  summarize(total_acres = sum(gis_acres, na.rm = TRUE)) %>%
+  left_join(ca_damage, by = c("year_" = "year")) %>%
+  arrange(desc(year_)) %>% 
+
+ggplot(aes(x = year_, y = total_acres)) +
+  geom_line() +
+  geom_smooth(se = FALSE)
+```
+
+
 
