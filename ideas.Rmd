@@ -196,5 +196,40 @@ ggplot(aes(x = year_, y = total_acres)) +
   geom_smooth(se = FALSE)
 ```
 
+```{r}
+#visualization showing the amount of CA that experienced a fire, per year, as a proportion of total area of CA. 
+#okay, not the best comparison, but I was thinking it could be interesting to look at how the total gis_acres is pretty big.
+ca_fires %>%  #using summarize
+  group_by(year_) %>% 
+  summarize(total_gis_acres = sum(gis_acres)) %>% 
+  
+ggplot(aes(x = year_, y = total_gis_acres)) + #visualization of gis_acres each year 
+  geom_col()
+
+ca_fires %>%  #using summarize
+  group_by(year_) %>% 
+  summarize(total_gis_acres = sum(gis_acres)) %>% 
+  add_column("Size_of_CA" = 104765000) %>% 
+  mutate(perc_of_CA = ((total_gis_acres / Size_of_CA) * 100)) %>% 
+  
+ggplot(aes(x = year_, y = perc_of_CA)) +
+  geom_point() +
+  geom_smooth()
+```
+
+```{r}
+#size of Rhode Island; I think eventually putting this on a map for size of fires imposed over a map of something. 
+ca_fires %>%  #using summarize
+  group_by(year_) %>% 
+  summarize(total_gis_acres = sum(gis_acres)) %>% 
+  add_column("Size_of_RI" = 775900) %>% 
+  mutate(perc_of_RI = ((total_gis_acres / Size_of_RI) * 100)) %>% 
+  
+ggplot(aes(x = year_, y = perc_of_RI)) +
+  geom_point() +
+  geom_smooth()
+```
+
+
 
 
