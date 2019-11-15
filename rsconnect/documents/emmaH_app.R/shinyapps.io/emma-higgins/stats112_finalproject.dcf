@@ -1,0 +1,13 @@
+name: stats112_finalproject
+title: stats112_finalproject
+username:
+account: emma-higgins
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1475910
+bundleId: 2590819
+url: https://emma-higgins.shinyapps.io/stats112_finalproject/
+when: 1573786620.59238
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: app_EdwinRH.R|CollegeScorecardDataDictionary.xlsx|ideas.html|ideas.md|ideas.Rmd|README.md|ideas_files/figure-html/unnamed-chunk-10-1.png|ideas_files/figure-html/unnamed-chunk-12-1.png|ideas_files/figure-html/unnamed-chunk-4-1.png|ideas_files/figure-html/unnamed-chunk-7-1.png|ideas_files/figure-html/unnamed-chunk-8-1.png
