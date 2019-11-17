@@ -10,6 +10,27 @@ output:
     toc_float: yes
 ---
 
+```{r libraries, warning=FALSE, message=FALSE}
+library(gganimate)
+library(ggmap)
+library(ggridges)
+library(ggthemes)
+library(knitr)
+library(leaflet)
+library(lubridate)
+library(plotly)
+library(scales)
+library(tidyverse)
+library(tibble)
+library(skimr)
+library(naniar)
+```
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(results = "hold", fig.show = "hold", rows.print = 10)
+```
+
+
 # Introduction
 
 * Info on motivation for looking into this dataset
@@ -41,6 +62,12 @@ Variable                    Meaning
 `Senate`	                  Party that controlled Senate during the passage of the bill
 `House`	                    Party that controlled House during the passage of the bill
 `Governor`                  Party of governor of the state during the passage of the bill
+
+```{r, warning=FALSE, message=FALSE}
+data <- read_csv("Honors_stats_updated_nov16.csv")
+data
+```
+
 
 # Preliminary Analysis: Clustering
 

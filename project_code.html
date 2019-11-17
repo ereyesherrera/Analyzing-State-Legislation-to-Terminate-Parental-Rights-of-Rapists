@@ -1511,6 +1511,19 @@ div.tocify {
 </div>
 
 
+<pre class="r"><code>library(gganimate)
+library(ggmap)
+library(ggridges)
+library(ggthemes)
+library(knitr)
+library(leaflet)
+library(lubridate)
+library(plotly)
+library(scales)
+library(tidyverse)
+library(tibble)
+library(skimr)
+library(naniar)</code></pre>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <ul>
@@ -1614,6 +1627,27 @@ div.tocify {
 </tr>
 </tbody>
 </table>
+<pre class="r"><code>data &lt;- read_csv(&quot;Honors_stats_updated_nov16.csv&quot;)
+data</code></pre>
+<pre><code>## # A tibble: 54 x 21
+##    State    Pop lgl_abortion_cl… health_clinics prop_abortion prop_health
+##    &lt;chr&gt;  &lt;dbl&gt;            &lt;dbl&gt;          &lt;dbl&gt;         &lt;dbl&gt;       &lt;dbl&gt;
+##  1 Alab… 4.87e6                3            234      1624916       20832 
+##  2 Alas… 7.38e5                3            165       246144        4475.
+##  3 Ariz… 6.83e6                9            183       758674       37312 
+##  4 Arka… 2.98e6                1            179      2978204       16638 
+##  5 Cali… 3.95e7              152           1694       260110.      23339.
+##  6 Colo… 5.46e6               21            243       259837.      22455.
+##  7 Conn… 3.59e6               25            231       143635.      15545.
+##  8 Dela… 9.46e5                3             13       315311.      72764.
+##  9 Flor… 2.03e7               71            636       285511.      31873.
+## 10 Geor… 1.02e7               17            274       600874.      37281.
+## # … with 44 more rows, and 15 more variables: paid_fam_leave &lt;chr&gt;,
+## #   prop_equal_pay &lt;dbl&gt;, equal_pay_rank &lt;dbl&gt;, marital_rape_except &lt;chr&gt;,
+## #   law_strength &lt;dbl&gt;, year_passage &lt;dbl&gt;, year_amend &lt;dbl&gt;,
+## #   post_2015 &lt;chr&gt;, bill_name &lt;chr&gt;, perc_women &lt;chr&gt;,
+## #   perc_demo_senate &lt;chr&gt;, perc_demo_house &lt;chr&gt;, Senate &lt;chr&gt;,
+## #   House &lt;chr&gt;, Governor &lt;chr&gt;</code></pre>
 </div>
 </div>
 <div id="preliminary-analysis-clustering" class="section level1">

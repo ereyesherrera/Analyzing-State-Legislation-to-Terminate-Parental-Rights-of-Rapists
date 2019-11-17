@@ -10,6 +10,26 @@ output:
     toc_float: yes
 ---
 
+
+```r
+library(gganimate)
+library(ggmap)
+library(ggridges)
+library(ggthemes)
+library(knitr)
+library(leaflet)
+library(lubridate)
+library(plotly)
+library(scales)
+library(tidyverse)
+library(tibble)
+library(skimr)
+library(naniar)
+```
+
+
+
+
 # Introduction
 
 * Info on motivation for looking into this dataset
@@ -41,6 +61,35 @@ Variable                    Meaning
 `Senate`	                  Party that controlled Senate during the passage of the bill
 `House`	                    Party that controlled House during the passage of the bill
 `Governor`                  Party of governor of the state during the passage of the bill
+
+
+```r
+data <- read_csv("Honors_stats_updated_nov16.csv")
+data
+```
+
+```
+## # A tibble: 54 x 21
+##    State    Pop lgl_abortion_cl… health_clinics prop_abortion prop_health
+##    <chr>  <dbl>            <dbl>          <dbl>         <dbl>       <dbl>
+##  1 Alab… 4.87e6                3            234      1624916       20832 
+##  2 Alas… 7.38e5                3            165       246144        4475.
+##  3 Ariz… 6.83e6                9            183       758674       37312 
+##  4 Arka… 2.98e6                1            179      2978204       16638 
+##  5 Cali… 3.95e7              152           1694       260110.      23339.
+##  6 Colo… 5.46e6               21            243       259837.      22455.
+##  7 Conn… 3.59e6               25            231       143635.      15545.
+##  8 Dela… 9.46e5                3             13       315311.      72764.
+##  9 Flor… 2.03e7               71            636       285511.      31873.
+## 10 Geor… 1.02e7               17            274       600874.      37281.
+## # … with 44 more rows, and 15 more variables: paid_fam_leave <chr>,
+## #   prop_equal_pay <dbl>, equal_pay_rank <dbl>, marital_rape_except <chr>,
+## #   law_strength <dbl>, year_passage <dbl>, year_amend <dbl>,
+## #   post_2015 <chr>, bill_name <chr>, perc_women <chr>,
+## #   perc_demo_senate <chr>, perc_demo_house <chr>, Senate <chr>,
+## #   House <chr>, Governor <chr>
+```
+
 
 # Preliminary Analysis: Clustering
 
