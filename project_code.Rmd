@@ -59,13 +59,16 @@ Variable                    Meaning
 `perc_women`                percent of women 
 `perc_demo_senate`	        percent of members in the state senate that are of the Democratic party
 `perc_demo_house`	          percent of members in the state house that are of the Democratic party
-`Senate`	                  party that controlled state senate during the passage of the legislation;
-D = Democrat, R = Republican, P = Split, B = Bipartisan, N/A = Does not apply (legislation not passed)
+`Senate`	                  party that controlled state senate during the passage of the legislation; D = Democrat, R = Republican, P = Split, B = Bipartisan, N/A = Does not apply (legislation not passed)
 `House`	                    party that controlled state house during the passage of the legislation
 `Governor`                  governor's party affiliation
 
 ```{r, warning=FALSE, message=FALSE}
 data <- read_csv("Honors_stats_updated_nov17_2.csv")
+data <- data %>%
+  mutate(post_2015 = fct_collapse(post_2015, Yes = c("yes", "Yes")),
+         State = fct_recode(State, "Wisconsin" = "Wisonsin", "Tennessee" = "Tennesse"))
+
 data
 ```
 
@@ -79,7 +82,6 @@ data
 my_cluster_data <- data %>% 
   select(-c(X22, bill_name, year_amend)) %>%
   replace_na(replace = list(perc_women = 0, post_2015 = "No")) %>%
-  mutate(post_2015 = fct_collapse(post_2015, Yes = c("yes", "Yes"))) %>%
   mutate(Senate = as.numeric(factor(Senate)),
          House = as.numeric(factor(House)),
          paid_fam_leave = as.numeric(factor(paid_fam_leave)),
@@ -93,7 +95,7 @@ my_cluster_data <- data %>%
 hier_model <- hclust(dist(scale(my_cluster_data)), method = "complete")
 
 # Visualization: dendrogram (change font size w/ cex)
-plot(hier_model, cex = 0.8, main = "Title")
+plot(hier_model, cex = 0.8, xlab = "", sub = "Method: Complete Linkage")
 
 # Assign each sample case to a cluster (you can add to dataset using mutate())
 # You specify the number of clusters, k
@@ -105,6 +107,22 @@ clusters <- as.factor(cutree(hier_model, k = 5))
 my_cluster_data %>%
   mutate(cluster = clusters) %>% group_by(cluster) %>%
   summarize_all(list(mean = mean), na.rm = TRUE)
+```
+
+```{r}
+states_map <- map_data("state")
+
+data %>% 
+  mutate(cluster = clusters,
+         State = tolower(State)) %>%
+  ggplot(aes(fill = cluster)) +
+  geom_map(aes(map_id = State), color = "black", size = 0.1, alpha = 0.8, map = states_map) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
+  scale_fill_viridis_d() +
+  labs(fill = "Cluster", title = "How Each State Clusters Together", 
+       subtitle = "Results from Hierarchical Analysis") + 
+  theme(plot.title = element_text(face = "bold", size = 12))
 ```
 
 
@@ -181,8 +199,6 @@ data %>%
   theme(axis.text.y = element_blank(),
         legend.position = "bottom") +
   scale_x_continuous(breaks = seq(1992, 2020, 3))
-
-  
 ```
 
 ```{r echo=FALSE, fig.align='center', dpi=600}
