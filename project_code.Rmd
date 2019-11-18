@@ -76,12 +76,11 @@ data
 # Preliminary Analysis: Clustering
 
 ```{r}
-# NOTE: ask Emma about funkiness of CA variables
+# NOTE: ask Emma about funkiness of CA variables (missing prop women)
 # NOTE: fair to say the MN is "no" for post_2015 (at least for this analysis)
 
 my_cluster_data <- data %>% 
-  select(-c(X22, bill_name, year_amend)) %>%
-  replace_na(replace = list(perc_women = 0, post_2015 = "No")) %>%
+  select(-c(X22, bill_name, year_amend))  %>%
   mutate(Senate = as.numeric(factor(Senate)),
          House = as.numeric(factor(House)),
          paid_fam_leave = as.numeric(factor(paid_fam_leave)),
