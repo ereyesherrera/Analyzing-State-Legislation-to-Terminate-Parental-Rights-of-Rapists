@@ -6,8 +6,6 @@ author:
 output: 
   html_document:
     keep_md: true
-    toc: true
-    toc_float: yes
     df_print: paged
 ---
 
@@ -90,10 +88,13 @@ For this analysis, we have to convert the variables that are factors into numeri
 
 * `paid_fam_leave` & `marital_rape_except` variables: 1 = "No", 2 = "Yes"
 
+Additionally, it is also important to note why we also excluded the variables that indicate population of the state, number of legal abortion clinics available to women in the state and the number of women's health clinics in the state. We did not want to size of the state to affect the results of the clustering analysis. So to account for this, we left the variables of `prop_abortion` and `prop_health` in the algorithm because this places all states on the same scale by computing the ratio of people per abortion clinic and people to health clinics, respectively. These are the most important variables since we are trying to find similarities in resources available, and not simply the size of the state, for example.
+
 Coding the variables above as such will allow us to see the break down of these variables when summarizing variable means across clusters once clusters have been determined. We used the complete linkage approach to find similarities between clusters of states, which is defined as the maximum distance between any 2 cases between any 2 clusters. After running the hierarchical clustering algorithm and visualizing the resultant dendrogram (i.e. when clusters merge and which states merge into what clusters), we determined that the appropriate number of natural clusters was 4 and better visualized these four clusters on a states map, as seen below.
 
 
 ```r
+# Intitial clustering w/o taking into account year passage
 my_cluster_data <- data %>% 
   select(-c(bill_name, year_amend, post_2015, law_strength, year_passage, Pop, lgl_abortion_clinics, health_clinics))  %>%
   mutate(Senate = as.numeric(factor(Senate)),
@@ -107,20 +108,21 @@ my_cluster_data <- data %>%
 # method can be "complete", "single", "average", "centroid"
 hier_model <- hclust(dist(scale(my_cluster_data)), method = "complete")
 
-# Visualization: dendrogram (change font size w/ cex)
+# Visualization: dendrogram
 plot(hier_model, cex = 0.8, xlab = "", main = "Dendrogram Not Accounting for Law Strength", 
      sub = "Method: Complete Linkage")
 
 # Assign each sample case to a cluster
 # You specify the number of clusters, k
-clusters <- as.factor(cutree(hier_model, k = 4))
+clusters <- as.factor(cutree(hier_model, k = 3))
 ```
 
-![](project_code_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+<img src="project_code_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" />
 
 
 
 ```r
+# Mapping initial clustering results
 states_map <- map_data("state")
 
 data %>% 
@@ -133,7 +135,7 @@ data %>%
   scale_fill_viridis_d() +
   labs(fill = "Cluster", title = "How Each State Clusters Together, Part 1", 
        subtitle = "Results from Hierarchical Analysis before accounting for law strength",
-       caption = "Note: Alaska is in Cluster 2, Hawaii is in Cluster 3") + 
+       caption = "Note: Alaska is in Cluster 1, Hawaii is in Cluster 2") + 
   theme(plot.title = element_text(face = "bold", size = 12),
         plot.caption = element_text(face = "italic", hjust = 0.5, size = 10))
 
@@ -145,16 +147,23 @@ my_cluster_data %>%
 
 <div data-pagedtable="false">
   <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["cluster"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["prop_abortion_mean"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["prop_health_mean"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["paid_fam_leave_mean"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["prop_equal_pay_mean"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["equal_pay_rank_mean"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["marital_rape_except_mean"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["perc_women_mean"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["perc_demo_senate_mean"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["perc_demo_house_mean"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["Senate_mean"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["House_mean"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["Governor_mean"],"name":[13],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"1259875.0","3":"22472.17","4":"1.000000","5":"76.81250","6":"38.37500","7":"1.562500","8":"18.58000","9":"26.64000","10":"29.18667","11":"4.687500","12":"4.875000","13":"2.937500"},{"1":"2","2":"869622.5","3":"26213.77","4":"1.000000","5":"81.50000","6":"20.33333","7":"1.000000","8":"23.29167","9":"40.10833","10":"43.56667","11":"4.666667","12":"4.250000","13":"2.166667"},{"1":"3","2":"302463.8","3":"32047.79","4":"1.533333","5":"83.73333","6":"13.93333","7":"1.266667","8":"30.30667","9":"64.31333","10":"64.70667","11":"2.200000","12":"2.466667","13":"1.666667"},{"1":"4","2":"2074355.7","3":"13459.37","4":"1.000000","5":"76.57143","6":"36.57143","7":"1.000000","8":"20.41429","9":"54.75000","10":"49.56667","11":"2.714286","12":"1.857143","13":"1.857143"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["cluster"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["prop_abortion_mean"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["prop_health_mean"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["paid_fam_leave_mean"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["prop_equal_pay_mean"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["equal_pay_rank_mean"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["marital_rape_except_mean"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["perc_women_mean"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["perc_demo_senate_mean"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["perc_demo_house_mean"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["Senate_mean"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["House_mean"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["Governor_mean"],"name":[13],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"1092623.9","3":"24075.71","4":"1.000000","5":"78.82143","6":"30.64286","7":"1.321429","8":"20.67407","9":"32.62593","10":"35.57778","11":"4.678571","12":"4.607143","13":"2.607143"},{"1":"2","2":"302463.8","3":"32047.79","4":"1.533333","5":"83.73333","6":"13.93333","7":"1.266667","8":"30.30667","9":"64.31333","10":"64.70667","11":"2.200000","12":"2.466667","13":"1.666667"},{"1":"3","2":"2074355.7","3":"13459.37","4":"1.000000","5":"76.57143","6":"36.57143","7":"1.000000","8":"20.41429","9":"54.75000","10":"49.56667","11":"2.714286","12":"1.857143","13":"1.857143"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
-</div>![](project_code_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+</div><img src="project_code_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" />
 
-From this map, we are able to visualize the which states are similar in terms of their representation in the state legislatures and the resources available in each state that may affect how legislation is enforced. We can define the four clusters seen above as the following:
+From this map, we are able to visualize the which states are similar in terms of their representation in the state legislatures and the resources available in each state that may affect how legislation is enforced. We can define the four clusters seen above as the following, based on the means for each variable within each cluster:
 
-* Cluster 3: States with the most access to 
+* **Cluster 1**: States whose representation in the state legislature is Republican favored and has the second to worst representation of women. It is a tier below Cluster 2 and a tier higher than Cluster 3 in terms of "equality" for women.
+
+* **Cluster 2**: States whose representation in the state legislature is strongly Democratic favored and has the highest representation of women. These states also have the most "equality" for women, most access to abortion and health clinics. (Best in regards to our research question).
+
+* **Cluster 3**: States whose representation in the state legislature is for the most part split, with representation of women the lowest out of the three clusters and the worst in terms of "equality" for women. (Worst in regards to our research question).
+
+Taking into account the metric above in our cluster analysis, we want to compare how each state *actually* rules on this legislation to how they seem that they would on paper based on the variables above. As such, we created another map that shows the law strength for each state, with 1 being the "worst" (i.e.nothing in place) and 5 being the best (i.e. clear and convincing).
 
 
 ```r
+# Mapping states and law strength
 data %>%
   mutate(State = tolower(State)) %>%
   ggplot(aes(fill = factor(law_strength))) +
@@ -169,10 +178,18 @@ data %>%
         plot.caption = element_text(face = "italic", hjust = 0.5, size = 10))
 ```
 
-![](project_code_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+<img src="project_code_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" />
+
+Comparing the two maps above, we find some surprising results. For example, the group of West Coast and some East Coast states that were coded as being in Cluster 2 - the best cluster - only have a strength of 2 for the legislation they have in place. Based on the clustering performed above, we would expect these states to have a strong legislation since they seem to be most progressive and have the most representation for women liberal ideals. Conversely, we see that states such as Florida, Mississippi and Georgia who were placed in Cluster 1 or Cluster 2 - the worse clusters - have much better law strengths. 
+
+There are many possible explanations for this effect. One of them may be that those states in which have lower "equality" for women may need to have stronger laws in place to protect them because of their "make-up" in terms of treatment towards women. (NEED EMMA FOR THIS PART)
+
+
+Bringing it all together and now accounting for the year in which the legislation in question was passed and the strength of the law, we re-run our clustering algorithm to see how states are similar to each other in a more hollistic view, accounting for both what we expected their attitudes towards this legislation to be and the reality for the legislation in these states. Again, we determined their to be 3 "natural" clusters and visualized these groups on the map once again.
 
 
 ```r
+# Hierarchical Analysis using all information
 my_cluster_data2 <- data %>% 
   select(-c(bill_name, year_amend, Pop, lgl_abortion_clinics, health_clinics))  %>%
   mutate(Senate = as.numeric(factor(Senate)),
@@ -187,28 +204,25 @@ my_cluster_data2 <- data %>%
 # method can be "complete", "single", "average", "centroid"
 hier_model2 <- hclust(dist(scale(my_cluster_data2)), method = "complete")
 
-# Visualization: dendrogram (change font size w/ cex)
+# Visualization: dendrogram
 plot(hier_model2, cex = 0.8, xlab = "", main = " Dendrogram Accounting for Law Strength", 
      sub = "Method: Complete Linkage")
 
-# Assign each sample case to a cluster (you can add to dataset using mutate())
+# Assign each sample case to a cluster
 # You specify the number of clusters, k
-clusters2 <- as.factor(cutree(hier_model2, k = 4))
-
-# Calculating the mean of each feature for each cluster when there are 2 clusters
-my_cluster_data2 %>%
-  mutate(cluster = clusters2) %>% group_by(cluster) %>%
-  summarize_all(list(mean = mean), na.rm = TRUE)
+clusters2 <- as.factor(cutree(hier_model2, k = 3))
 ```
 
-<div data-pagedtable="false">
-  <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["cluster"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["prop_abortion_mean"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["prop_health_mean"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["paid_fam_leave_mean"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["prop_equal_pay_mean"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["equal_pay_rank_mean"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["marital_rape_except_mean"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["law_strength_mean"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["year_passage_mean"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["post_2015_mean"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["perc_women_mean"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["perc_demo_senate_mean"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["perc_demo_house_mean"],"name":[13],"type":["dbl"],"align":["right"]},{"label":["Senate_mean"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["House_mean"],"name":[15],"type":["dbl"],"align":["right"]},{"label":["Governor_mean"],"name":[16],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"1066504.1","3":"23081.10","4":"1.000","5":"76.87500","6":"38.00000","7":"1.437500","8":"3.062500","9":"2014.688","10":"2.000000","11":"19.0500","12":"27.43750","13":"29.90625","14":"4.812500","15":"5.000000","16":"3.000000"},{"1":"2","2":"373399.2","3":"21381.01","4":"1.125","5":"80.25000","6":"25.37500","7":"1.000000","8":"4.250000","9":"2016.875","10":"2.500000","11":"30.3375","12":"39.10000","13":"41.75000","14":"4.250000","15":"4.125000","16":"2.000000"},{"1":"3","2":"2107259.9","3":"20569.49","4":"1.000","5":"79.16667","6":"27.91667","7":"1.166667","8":"2.166667","9":"2006.909","10":"1.545455","11":"17.3000","12":"50.86000","13":"49.65000","14":"3.416667","15":"2.750000","16":"1.916667"},{"1":"4","2":"308038.6","3":"32990.91","4":"1.500","5":"84.07143","6":"12.64286","7":"1.285714","8":"3.214286","9":"2011.214","10":"1.714286","11":"29.8500","12":"65.26429","13":"65.68571","14":"2.214286","15":"2.357143","16":"1.714286"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>![](project_code_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+<img src="project_code_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
 
 
 ```r
+# Calculating the mean of each feature for each cluster when there are 3 clusters
+my_cluster_data2 %>%
+  mutate(cluster = clusters2) %>% group_by(cluster) %>%
+  summarize_all(list(mean = mean), na.rm = TRUE)
+
+# Mapping Clusters when accounting for law strength and year passage
 data %>% 
   mutate(cluster = clusters2,
          State = tolower(State)) %>%
@@ -224,7 +238,20 @@ data %>%
         plot.caption = element_text(face = "italic", hjust = 0.5, size = 10))
 ```
 
-![](project_code_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+<div data-pagedtable="false">
+  <script data-pagedtable-source type="application/json">
+{"columns":[{"label":["cluster"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["prop_abortion_mean"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["prop_health_mean"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["paid_fam_leave_mean"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["prop_equal_pay_mean"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["equal_pay_rank_mean"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["marital_rape_except_mean"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["law_strength_mean"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["year_passage_mean"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["post_2015_mean"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["perc_women_mean"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["perc_demo_senate_mean"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["perc_demo_house_mean"],"name":[13],"type":["dbl"],"align":["right"]},{"label":["Senate_mean"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["House_mean"],"name":[15],"type":["dbl"],"align":["right"]},{"label":["Governor_mean"],"name":[16],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"835469.1","3":"22514.40","4":"1.041667","5":"78.00000","6":"33.79167","7":"1.291667","8":"3.458333","9":"2015.417","10":"2.166667","11":"22.8125","12":"31.32500","13":"33.85417","14":"4.625000","15":"4.708333","16":"2.666667"},{"1":"2","2":"2107259.9","3":"20569.49","4":"1.000000","5":"79.16667","6":"27.91667","7":"1.166667","8":"2.166667","9":"2006.909","10":"1.545455","11":"17.3000","12":"50.86000","13":"49.65000","14":"3.416667","15":"2.750000","16":"1.916667"},{"1":"3","2":"308038.6","3":"32990.91","4":"1.500000","5":"84.07143","6":"12.64286","7":"1.285714","8":"3.214286","9":"2011.214","10":"1.714286","11":"29.8500","12":"65.26429","13":"65.68571","14":"2.214286","15":"2.357143","16":"1.714286"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div><img src="project_code_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
+
+The breakdown in groups is very similar to the original clustering analysis, but assigned to different clusters:
+
+* **Cluster 1**: States whose representation in the state legislature is Republican favored and has the second to worst representation of women. It is a tier below Cluster 3 (the best) and a tier higher than Cluster 3 (worst) in terms of "equality" for women and has the strongest law strength.
+
+* **Cluster 2**: States whose representation in the state legislature is about split and has the worst resources, "equality" and representation for women, with an average law strength of 2 (Worst in our analysis).
+
+* **Cluster 3**: States whose representation in the state legislature is strongly favored towards Democratic and the most representation of women. These states have the most resources for women and the best "equality", with an average law strength of about 3 (Best in our analysis).
+
 
 # Other things to keep in mind as we make visualizations
 
@@ -253,7 +280,7 @@ data %>%
   <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["Law Strength"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["Number of States"],"name":[2],"type":["int"],"align":["right"]},{"label":["Proportion (Law Passed after 2015)"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"1","3":"0.04761905"},{"1":"2","2":"5","3":"0.23809524"},{"1":"3","2":"3","3":"0.14285714"},{"1":"5","2":"12","3":"0.57142857"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
-</div>![](project_code_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+</div><img src="project_code_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
 
 
 * There are only 16 states that use “clear and convincing evidence” as a burden of proof for terminating parental rights of rapists, and 14 of those states (87.5%) passed legislation AFTER 2015.
@@ -272,7 +299,7 @@ data %>%
        subtitle = "For States with Law Strength of 5")
 ```
 
-![](project_code_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+<img src="project_code_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
 
 
 * 6 (37.5%) “blue” (majority democratic legislators in the state legislature), 2 (12.5%) “purple” (split between democratic and republican legislators in the state legislature) and 8 (50%) “red” (majority republican legislators in the state legislature) states use the clear and convincing standard. There seems to be no significant variation along party lines with regard to a higher burden of proof.
@@ -303,7 +330,7 @@ data %>%
 ## Warning: Removed 1 rows containing non-finite values (stat_density).
 ```
 
-![](project_code_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+<img src="project_code_files/figure-html/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
 
 * This shows when each state passed the legislation, going from earliest to latest (we can make a gif out of this!!)
 
@@ -324,7 +351,7 @@ data %>%
 ## Warning: Removed 1 rows containing missing values (geom_text).
 ```
 
-![](project_code_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+<img src="project_code_files/figure-html/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
 
 <img src="files/year_passage.gif" style="display: block; margin: auto;" />
 

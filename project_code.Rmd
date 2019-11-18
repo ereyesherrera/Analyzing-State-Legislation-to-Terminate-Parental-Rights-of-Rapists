@@ -6,8 +6,6 @@ author:
 output: 
   html_document:
     keep_md: true
-    toc: true
-    toc_float: yes
     df_print: paged
 ---
 
@@ -29,7 +27,7 @@ library(gridExtra)
 ```
 
 ```{r setup, echo=FALSE}
-knitr::opts_chunk$set(results = "hold", fig.show = "hold")
+knitr::opts_chunk$set(results = "hold", fig.show = "hold", fig.align = "center", dpi = 200)
 ```
 
 
