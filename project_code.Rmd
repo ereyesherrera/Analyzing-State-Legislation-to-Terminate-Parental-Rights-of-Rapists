@@ -77,8 +77,15 @@ data
 # Eg: assume the identifying variable is labeled 'id'
 my_cluster_data <- data %>% 
   select(-c("X22", "bill_name")) %>%
-  replace_na(replace = list(perc_women = 0)) %>%
-  mutate_if(is.character, as.factor) %>%
+  replace_na(replace = list(perc_women = 0, post_2015 = "No")) %>%
+  mutate(post_2015 = fct_collapse(post_2015, Yes = c("yes", "Yes"))) %>%
+  mutate(Senate = as.numeric(factor(Senate)),
+         House = as.numeric(factor(House)),
+         paid_fam_leave = as.numeric(factor(paid_fam_leave)),
+         post_2015 = as.numeric(factor(post_2015)),
+         Governor = as.numeric(factor(Governor)),
+         marital_rape_except = as.numeric(factor(marital_rape_except))) %>%
+  select(-year_amend) %>%
   column_to_rownames("State")
 
 my_cluster_data
@@ -99,13 +106,13 @@ plot(hier_model, cex = 0.8, main = "Title")
 
 # Assign each sample case to a cluster (you can add to dataset using mutate())
 # You specify the number of clusters, k
-as.factor(cutree(hier_model, k = ___))
+clusters <- as.factor(cutree(hier_model, k = 5))
 ```
 
 ```{r eval=FALSE}
 # Calculating the mean of each feature for each cluster when there are 2 clusters
 my_cluster_data %>%
-  mutate(cluster = cluster_2) %>% group_by(cluster) %>%
+  mutate(cluster = clusters) %>% group_by(cluster) %>%
   summarize_all(list(mean = mean))
 ```
 
@@ -142,7 +149,9 @@ data %>%
   ggplot(aes(x = post_2015, y = n)) +
   geom_col(fill = "black") +
   theme_minimal() +
-  labs(x = "Did the State pass legislation after 2015?", y = "Number of States")
+  labs(x = "Did the State pass legislation after 2015?", y = "Number of States",
+       title = "States that passed legislation after 2015", 
+       subtitle = "For States with Law Strength of 5")
 ```
 
 
@@ -183,3 +192,8 @@ data %>%
 
   
 ```
+
+```{r echo=FALSE, fig.align='center', dpi=600}
+knitr::include_graphics("files/year_passage.gif")
+```
+
