@@ -92,15 +92,8 @@ my_cluster_data <- data %>%
 # method can be "complete", "single", "average", "centroid"
 hier_model <- hclust(dist(scale(my_cluster_data)), method = "complete")
 
-
-# Visualization: heatmaps (w/ and w/out dendrogram)
-heatmap(data.matrix(scale(my_cluster_data)), Colv = NA)
-heatmap(data.matrix(scale(my_cluster_data)), Colv = NA, Rowv = NA)
-
-
 # Visualization: dendrogram (change font size w/ cex)
 plot(hier_model, cex = 0.8, main = "Title")
-
 
 # Assign each sample case to a cluster (you can add to dataset using mutate())
 # You specify the number of clusters, k
@@ -113,6 +106,7 @@ my_cluster_data %>%
   mutate(cluster = clusters) %>% group_by(cluster) %>%
   summarize_all(list(mean = mean), na.rm = TRUE)
 ```
+
 
 # Other things to keep in mind as we make visualizations
 
