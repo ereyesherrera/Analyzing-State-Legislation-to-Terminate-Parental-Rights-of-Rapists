@@ -72,11 +72,12 @@ data
 
 # Preliminary Analysis: Clustering
 
-```{r eval=FALSE}
-# Process the data: turn the identifying variable into row names
-# Eg: assume the identifying variable is labeled 'id'
+```{r}
+# NOTE: ask Emma about funkiness of CA variables
+# NOTE: fair to say the MN is "no" for post_2015 (at least for this analysis)
+
 my_cluster_data <- data %>% 
-  select(-c("X22", "bill_name")) %>%
+  select(-c(X22, bill_name, year_amend)) %>%
   replace_na(replace = list(perc_women = 0, post_2015 = "No")) %>%
   mutate(post_2015 = fct_collapse(post_2015, Yes = c("yes", "Yes"))) %>%
   mutate(Senate = as.numeric(factor(Senate)),
@@ -85,10 +86,7 @@ my_cluster_data <- data %>%
          post_2015 = as.numeric(factor(post_2015)),
          Governor = as.numeric(factor(Governor)),
          marital_rape_except = as.numeric(factor(marital_rape_except))) %>%
-  select(-year_amend) %>%
   column_to_rownames("State")
-
-my_cluster_data
 
 # Hierarchical clustering
 # method can be "complete", "single", "average", "centroid"
@@ -109,11 +107,11 @@ plot(hier_model, cex = 0.8, main = "Title")
 clusters <- as.factor(cutree(hier_model, k = 5))
 ```
 
-```{r eval=FALSE}
+```{r}
 # Calculating the mean of each feature for each cluster when there are 2 clusters
 my_cluster_data %>%
   mutate(cluster = clusters) %>% group_by(cluster) %>%
-  summarize_all(list(mean = mean))
+  summarize_all(list(mean = mean), na.rm = TRUE)
 ```
 
 # Other things to keep in mind as we make visualizations
