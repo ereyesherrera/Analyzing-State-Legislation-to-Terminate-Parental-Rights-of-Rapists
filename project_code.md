@@ -32,14 +32,14 @@ library(naniar)
 
 # Introduction
 
-* Info on motivation for looking into this dataset
+* Info on motivation for looking into this data set
 * explain where data came from
 * outline research question
 
 ## Codebook
 
 Variable                    Meaning
---------------------------  ---------
+--------------------------  --------
 `state`                     identifying variable
 `pop`                       size of population
 `lgl_abortion_clinics`      Number of legal abortion clinics available to women in the state
@@ -50,26 +50,27 @@ Variable                    Meaning
 `prop_equal_pay`            how many cents women make to the dollar that men make in each state
 `equal_pay_rank`            how a state ranks nationally according to equal pay laws
 `marital_rape_except`       whether a state has loopholes in sexual assault in the cases of marriage
-`law strength`              5 = clear and convincing, 4 = beyond reasonable doubt, 3 = not specified, 2 = conviction, 1 = nothing				
+`law strength`              metric to assign to the strength of the legislation: 5 = clear and convincing, 4 = beyond reasonable doubt, 3 = not specified, 2 = conviction, 1 = nothing				
 `year_passage`              when the bill (to terminate parental rights in cases of rape that resulted in child's conception) was initially passed
 `year_amend`                when/if the bill was amended to expand restrictions from requiring a rape conviction to clear and convincing evidence
 `post_2015`                 whether the bill was passed before or after 2015, when the Obama Administration issued grant money to any state that made this issue a legislative priority
-`bill_name`                 name of bill passed in the state
+`bill_name`                 name of legaislation passed in the state
 `perc_women`                percent of women 
-`perc_demo_senate`	        percent of members in the Senate that are of the Democratic party
-`perc_demo_house`	          percent of memebrs in the House that are of the Democratic party
-`Senate`	                  Party that controlled Senate during the passage of the bill
-`House`	                    Party that controlled House during the passage of the bill
-`Governor`                  Party of governor of the state during the passage of the bill
+`perc_demo_senate`	        percent of members in the state senate that are of the Democratic party
+`perc_demo_house`	          percent of members in the state house that are of the Democratic party
+`Senate`	                  party that controlled state senate during the passage of the legislation;
+D = Democrat, R = Republican, P = Split, B = Bipartisan, N/A = Does not apply (legislation not passed)
+`House`	                    party that controlled state house during the passage of the legislation
+`Governor`                  governor's party affiliation
 
 
 ```r
-data <- read_csv("Honors_stats_updated_nov16.csv")
+data <- read_csv("Honors_stats_updated_nov17_2.csv")
 data
 ```
 
 ```
-## # A tibble: 54 x 21
+## # A tibble: 50 x 22
 ##    State    Pop lgl_abortion_cl… health_clinics prop_abortion prop_health
 ##    <chr>  <dbl>            <dbl>          <dbl>         <dbl>       <dbl>
 ##  1 Alab… 4.87e6                3            234      1624916       20832 
@@ -82,12 +83,12 @@ data
 ##  8 Dela… 9.46e5                3             13       315311.      72764.
 ##  9 Flor… 2.03e7               71            636       285511.      31873.
 ## 10 Geor… 1.02e7               17            274       600874.      37281.
-## # … with 44 more rows, and 15 more variables: paid_fam_leave <chr>,
+## # … with 40 more rows, and 16 more variables: paid_fam_leave <chr>,
 ## #   prop_equal_pay <dbl>, equal_pay_rank <dbl>, marital_rape_except <chr>,
 ## #   law_strength <dbl>, year_passage <dbl>, year_amend <dbl>,
-## #   post_2015 <chr>, bill_name <chr>, perc_women <chr>,
-## #   perc_demo_senate <chr>, perc_demo_house <chr>, Senate <chr>,
-## #   House <chr>, Governor <chr>
+## #   post_2015 <chr>, bill_name <chr>, perc_women <dbl>,
+## #   perc_demo_senate <dbl>, perc_demo_house <dbl>, Senate <chr>,
+## #   House <chr>, Governor <chr>, X22 <chr>
 ```
 
 
@@ -97,14 +98,17 @@ data
 ```r
 # Process the data: turn the identifying variable into row names
 # Eg: assume the identifying variable is labeled 'id'
-library(tibble)
-my_cluster_data <- my_raw_data %>% 
-  column_to_rownames("id")
+my_cluster_data <- data %>% 
+  select(-c("X22", "bill_name")) %>%
+  replace_na(replace = list(perc_women = 0)) %>%
+  mutate_if(is.character, as.factor) %>%
+  column_to_rownames("State")
 
+my_cluster_data
 
 # Hierarchical clustering
 # method can be "complete", "single", "average", "centroid"
-hier_model <- hclust(dist(scale(my_cluster_data)), method = ___)
+hier_model <- hclust(dist(scale(my_cluster_data)), method = "complete")
 
 
 # Visualization: heatmaps (w/ and w/out dendrogram)
@@ -113,7 +117,7 @@ heatmap(data.matrix(scale(my_cluster_data)), Colv = NA, Rowv = NA)
 
 
 # Visualization: dendrogram (change font size w/ cex)
-plot(hier_model, cex = 0.8)
+plot(hier_model, cex = 0.8, main = "Title")
 
 
 # Assign each sample case to a cluster (you can add to dataset using mutate())
@@ -133,10 +137,102 @@ my_cluster_data %>%
 
 * Of the 24 states (nearly half) that passed legislation after 2015, 19 (79.2%) of them do not require a rape conviction for termination of parental rights, and 14 (58.33%) require only clear and convincing evidence to terminate parental rights of rapists.
 
+
+```r
+data %>%
+  filter(post_2015 == "Yes") %>%
+  ggplot(aes(x = factor(law_strength))) +
+  geom_bar(fill = "black") +
+  theme_minimal() +
+  labs(x = "Law Strength", y = "Number of States")
+
+data %>%
+  filter(post_2015 == "Yes") %>%
+  group_by(factor(law_strength)) %>%
+  count() %>%
+  ungroup() %>%
+  mutate(prop = n/sum(n)) %>%
+  rename(`Law Strength` = "factor(law_strength)", `Number of States` = "n",
+         `Proportion (Law Passed after 2015)` = "prop")
+```
+
+```
+## # A tibble: 4 x 3
+##   `Law Strength` `Number of States` `Proportion (Law Passed after 2015)`
+##   <fct>                       <int>                                <dbl>
+## 1 1                               1                               0.0476
+## 2 2                               5                               0.238 
+## 3 3                               3                               0.143 
+## 4 5                              12                               0.571
+```
+
+![](project_code_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
+
 * There are only 16 states that use “clear and convincing evidence” as a burden of proof for terminating parental rights of rapists, and 14 of those states (87.5%) passed legislation AFTER 2015.
 
+
+```r
+data %>%
+  filter(law_strength == 5) %>%
+  group_by(post_2015) %>%
+  count() %>%
+  ggplot(aes(x = post_2015, y = n)) +
+  geom_col(fill = "black") +
+  theme_minimal() +
+  labs(x = "Did the State pass legislation after 2015?", y = "Number of States")
+```
+
+![](project_code_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+
+
 * 6 (37.5%) “blue” (majority democratic legislators in the state legislature), 2 (12.5%) “purple” (split between democratic and republican legislators in the state legislature) and 8 (50%) “red” (majority republican legislators in the state legislature) states use the clear and convincing standard. There seems to be no significant variation along party lines with regard to a higher burden of proof.
+
+
+```r
+# Still working this out
+data %>%
+  filter(law_strength == 5) %>%
+  mutate(party = case_when(Senate == "R" & House == "R" ~ "Red",
+                           Senate == "D" & House == "D" ~ "Blue"))
+```
 
 * 14 states who passed legislation to terminate the parental rights of rapists had democratically controlled legislatures at the time of passage, 5 were split, and 30 were republican-controlled.
 
 * 21 states currently require a rape conviction for TPR. Of those states, 4 (19%) were “blue”, 14 (66.67%) were “red”, and 3 (14.29%) were “purple” at the time of passage.
+
+* This shows the distribution of years of when the legislation was passed
+
+```r
+data %>%
+  ggplot(aes(x = year_passage)) +
+  geom_density() +
+  theme_minimal()
+```
+
+```
+## Warning: Removed 1 rows containing non-finite values (stat_density).
+```
+
+![](project_code_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+
+* This shows when each state passed the legislation, going from earliest to latest (we can make a gif out of this!!)
+
+
+```r
+data %>%
+  arrange(year_passage) %>%
+  ggplot(aes(y = State, x = year_passage, label = State, color = factor(law_strength))) +
+  geom_text(size = 2.5) +
+  theme_minimal() +
+  labs(x = "Year Legislation Passed", color = "Law Strength") +
+  theme(axis.text.y = element_blank(),
+        legend.position = "bottom") +
+  scale_x_continuous(breaks = seq(1992, 2020, 3))
+```
+
+```
+## Warning: Removed 1 rows containing missing values (geom_text).
+```
+
+![](project_code_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
