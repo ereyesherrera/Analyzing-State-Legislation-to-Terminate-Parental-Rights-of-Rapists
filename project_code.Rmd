@@ -1,0 +1,305 @@
+---
+title: "Stats 112 Final Project (New Idea)"
+author: 
+- "Emma Higgins, Max Danielewicz, Will Hamlin, Edwin Reyes Herrera"
+- "STATS 112 Final Project"
+output: 
+  html_document:
+    keep_md: true
+    df_print: paged
+---
+
+```{r libraries, warning=FALSE, message=FALSE}
+library(gganimate)
+library(ggmap)
+library(ggridges)
+library(ggthemes)
+library(knitr)
+library(leaflet)
+library(lubridate)
+library(plotly)
+library(scales)
+library(tidyverse)
+library(tibble)
+library(skimr)
+library(naniar)
+library(gridExtra)
+```
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(results = "hold", fig.show = "hold", fig.align = "center", dpi = 200)
+```
+
+
+# Introduction
+
+* Info on motivation for looking into this data set
+* explain where data came from
+* outline research question
+
+## Codebook
+
+Variable                    Meaning
+--------------------------  --------
+`state`                     identifying variable
+`pop`                       size of population
+`lgl_abortion_clinics`      Number of legal abortion clinics available to women in the state
+`health_clinics`            women's health clinics that do not provide abortion services
+`prop_abortion`             the ratio of people per abortion clinic in the state (bigger numbers mean presumably less access)
+`prop_health`               the ratio of people per women's health clinic in the state (bigger numbers mean presumably less access)
+`paid_fam_leave`            whether a state has a law requiring an employer to issue paid family leave (women are disproportionately affected by paid family leave or lack thereof because they're the ones having babies!)
+`prop_equal_pay`            how many cents women make to the dollar that men make in each state
+`equal_pay_rank`            how a state ranks nationally according to equal pay laws
+`marital_rape_except`       whether a state has loopholes in sexual assault in the cases of marriage
+`law strength`              metric to assign to the strength of the legislation: 5 = clear and convincing, 4 = beyond reasonable doubt, 3 = not specified, 2 = conviction, 1 = nothing				
+`year_passage`              when the bill (to terminate parental rights in cases of rape that resulted in child's conception) was initially passed
+`year_amend`                when/if the bill was amended to expand restrictions from requiring a rape conviction to clear and convincing evidence
+`post_2015`                 whether the bill was passed before or after 2015, when the Obama Administration issued grant money to any state that made this issue a legislative priority
+`bill_name`                 name of legaislation passed in the state
+`perc_women`                percent of women 
+`perc_demo_senate`	        percent of members in the state senate that are of the Democratic party
+`perc_demo_house`	          percent of members in the state house that are of the Democratic party
+`Senate`	                  party that controlled state senate during the passage of the legislation; D = Democrat, R = Republican, P = Split, B = Bipartisan, N/A = Does not apply (legislation not passed)
+`House`	                    party that controlled state house during the passage of the legislation
+`Governor`                  governor's party affiliation
+
+```{r, warning=FALSE, message=FALSE}
+data <- read_csv("Honors_stats_updated_nov18_2.csv")
+data <- data %>%
+  select(-X22)
+
+data
+```
+
+
+# Preliminary Analysis: Clustering
+
+To begin answering our research question, we first were interested in understanding how states are similar in their state legislatures and other variables that may account for how they enact the legislation we are interested in looking at. As such, we use hierarchical clustering analysis to find structure in our data and determine states that are similar with regards to the features outlined above. Our research question focuses on understanding factors that may influence how this legislation is enforced; as a result, we do not factor in the actual strength of the law we coded above or the year in which it was passed. This is because we are interested in seeing if the variables in this data set have a relationship with what the strength of the legislation actually is.
+
+For this analysis, we have to convert the variables that are factors into numeric data. As such, this is how the variables were coded:
+
+* `Senate`, `House` & `Governor` variables: 1 = Bipartisan (B), 2 = Democratic (D), 3 = Purple (P), 4 = Legislation not passed (N/A), 5 = Republican (R)
+
+* `paid_fam_leave` & `marital_rape_except` variables: 1 = "No", 2 = "Yes"
+
+Additionally, it is also important to note why we also excluded the variables that indicate population of the state, number of legal abortion clinics available to women in the state and the number of women's health clinics in the state. We did not want to size of the state to affect the results of the clustering analysis. So to account for this, we left the variables of `prop_abortion` and `prop_health` in the algorithm because this places all states on the same scale by computing the ratio of people per abortion clinic and people to health clinics, respectively. These are the most important variables since we are trying to find similarities in resources available, and not simply the size of the state, for example.
+
+Coding the variables above as such will allow us to see the break down of these variables when summarizing variable means across clusters once clusters have been determined. We used the complete linkage approach to find similarities between clusters of states, which is defined as the maximum distance between any 2 cases between any 2 clusters. After running the hierarchical clustering algorithm and visualizing the resultant dendrogram (i.e. when clusters merge and which states merge into what clusters), we determined that the appropriate number of natural clusters was 4 and better visualized these four clusters on a states map, as seen below.
+
+```{r}
+# Intitial clustering w/o taking into account year passage
+my_cluster_data <- data %>% 
+  select(-c(bill_name, year_amend, post_2015, law_strength, year_passage, Pop, lgl_abortion_clinics, health_clinics))  %>%
+  mutate(Senate = as.numeric(factor(Senate)),
+         House = as.numeric(factor(House)),
+         Governor = as.numeric(factor(Governor)),
+         paid_fam_leave = as.numeric(factor(paid_fam_leave)),
+         marital_rape_except = as.numeric(factor(marital_rape_except))) %>%
+  column_to_rownames("State")
+
+# Hierarchical clustering
+# method can be "complete", "single", "average", "centroid"
+hier_model <- hclust(dist(scale(my_cluster_data)), method = "complete")
+
+# Visualization: dendrogram
+plot(hier_model, cex = 0.8, xlab = "", main = "Dendrogram Not Accounting for Law Strength", 
+     sub = "Method: Complete Linkage")
+
+# Assign each sample case to a cluster
+# You specify the number of clusters, k
+clusters <- as.factor(cutree(hier_model, k = 3))
+```
+
+
+```{r}
+# Mapping initial clustering results
+states_map <- map_data("state")
+
+data %>% 
+  mutate(cluster = clusters,
+         State = tolower(State)) %>%
+  ggplot(aes(fill = cluster)) +
+  geom_map(aes(map_id = State), color = "black", size = 0.1, alpha = 0.8, map = states_map) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
+  scale_fill_viridis_d() +
+  labs(fill = "Cluster", title = "How Each State Clusters Together, Part 1", 
+       subtitle = "Results from Hierarchical Analysis before accounting for law strength",
+       caption = "Note: Alaska is in Cluster 1, Hawaii is in Cluster 2") + 
+  theme(plot.title = element_text(face = "bold", size = 12),
+        plot.caption = element_text(face = "italic", hjust = 0.5, size = 10))
+
+# Calculating the mean of each feature for each cluster when there are 2 clusters
+my_cluster_data %>%
+  mutate(cluster = clusters) %>% group_by(cluster) %>%
+  summarize_all(list(mean = mean), na.rm = TRUE)
+```
+
+From this map, we are able to visualize the which states are similar in terms of their representation in the state legislatures and the resources available in each state that may affect how legislation is enforced. We can define the four clusters seen above as the following, based on the means for each variable within each cluster:
+
+* **Cluster 1**: States whose representation in the state legislature is Republican favored and has the second to worst representation of women. It is a tier below Cluster 2 and a tier higher than Cluster 3 in terms of "equality" for women.
+
+* **Cluster 2**: States whose representation in the state legislature is strongly Democratic favored and has the highest representation of women. These states also have the most "equality" for women, most access to abortion and health clinics. (Best in regards to our research question).
+
+* **Cluster 3**: States whose representation in the state legislature is for the most part split, with representation of women the lowest out of the three clusters and the worst in terms of "equality" for women. (Worst in regards to our research question).
+
+Taking into account the metric above in our cluster analysis, we want to compare how each state *actually* rules on this legislation to how they seem that they would on paper based on the variables above. As such, we created another map that shows the law strength for each state, with 1 being the "worst" (i.e.nothing in place) and 5 being the best (i.e. clear and convincing).
+
+```{r}
+# Mapping states and law strength
+data %>%
+  mutate(State = tolower(State)) %>%
+  ggplot(aes(fill = factor(law_strength))) +
+  geom_map(aes(map_id = State), color = "black", size = 0.1, alpha = 0.8, map = states_map) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
+  scale_fill_viridis_d() +
+  labs(fill = "Law Strength", title = "Law Strength for Each State", 
+       subtitle = "How States Actually Treat Legislation",
+       caption = "Note: Alaska is 3, Hawaii is 5") + 
+  theme(plot.title = element_text(face = "bold", size = 12),
+        plot.caption = element_text(face = "italic", hjust = 0.5, size = 10))
+```
+
+Comparing the two maps above, we find some surprising results. For example, the group of West Coast and some East Coast states that were coded as being in Cluster 2 - the best cluster - only have a strength of 2 for the legislation they have in place. Based on the clustering performed above, we would expect these states to have a strong legislation since they seem to be most progressive and have the most representation for women liberal ideals. Conversely, we see that states such as Florida, Mississippi and Georgia who were placed in Cluster 1 or Cluster 2 - the worse clusters - have much better law strengths. 
+
+There are many possible explanations for this effect. One of them may be that those states in which have lower "equality" for women may need to have stronger laws in place to protect them because of their "make-up" in terms of treatment towards women. (NEED EMMA FOR THIS PART)
+
+
+Bringing it all together and now accounting for the year in which the legislation in question was passed and the strength of the law, we re-run our clustering algorithm to see how states are similar to each other in a more hollistic view, accounting for both what we expected their attitudes towards this legislation to be and the reality for the legislation in these states. Again, we determined their to be 3 "natural" clusters and visualized these groups on the map once again.
+
+```{r}
+# Hierarchical Analysis using all information
+my_cluster_data2 <- data %>% 
+  select(-c(bill_name, year_amend, Pop, lgl_abortion_clinics, health_clinics))  %>%
+  mutate(Senate = as.numeric(factor(Senate)),
+         House = as.numeric(factor(House)),
+         Governor = as.numeric(factor(Governor)),
+         post_2015 = as.numeric(factor(post_2015)),
+         paid_fam_leave = as.numeric(factor(paid_fam_leave)),
+         marital_rape_except = as.numeric(factor(marital_rape_except))) %>%
+  column_to_rownames("State")
+
+# Hierarchical clustering
+# method can be "complete", "single", "average", "centroid"
+hier_model2 <- hclust(dist(scale(my_cluster_data2)), method = "complete")
+
+# Visualization: dendrogram
+plot(hier_model2, cex = 0.8, xlab = "", main = " Dendrogram Accounting for Law Strength", 
+     sub = "Method: Complete Linkage")
+
+# Assign each sample case to a cluster
+# You specify the number of clusters, k
+clusters2 <- as.factor(cutree(hier_model2, k = 3))
+```
+
+```{r}
+# Calculating the mean of each feature for each cluster when there are 3 clusters
+my_cluster_data2 %>%
+  mutate(cluster = clusters2) %>% group_by(cluster) %>%
+  summarize_all(list(mean = mean), na.rm = TRUE)
+
+# Mapping Clusters when accounting for law strength and year passage
+data %>% 
+  mutate(cluster = clusters2,
+         State = tolower(State)) %>%
+  ggplot(aes(fill = cluster)) +
+  geom_map(aes(map_id = State), color = "black", size = 0.1, alpha = 0.8, map = states_map) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
+  scale_fill_viridis_d() +
+  labs(fill = "Cluster", title = "How Each State Clusters Together, Part 2", 
+       subtitle = "Accounting for Law Strength in Hierarchical Analysis",
+       caption = "Note: Alaska is in Cluster 1, Hawaii is in Cluster 3") + 
+  theme(plot.title = element_text(face = "bold", size = 12),
+        plot.caption = element_text(face = "italic", hjust = 0.5, size = 10))
+```
+
+The breakdown in groups is very similar to the original clustering analysis, but assigned to different clusters:
+
+* **Cluster 1**: States whose representation in the state legislature is Republican favored and has the second to worst representation of women. It is a tier below Cluster 3 (the best) and a tier higher than Cluster 3 (worst) in terms of "equality" for women and has the strongest law strength.
+
+* **Cluster 2**: States whose representation in the state legislature is about split and has the worst resources, "equality" and representation for women, with an average law strength of 2 (Worst in our analysis).
+
+* **Cluster 3**: States whose representation in the state legislature is strongly favored towards Democratic and the most representation of women. These states have the most resources for women and the best "equality", with an average law strength of about 3 (Best in our analysis).
+
+
+# Other things to keep in mind as we make visualizations
+
+* Of the 24 states (nearly half) that passed legislation after 2015, 19 (79.2%) of them do not require a rape conviction for termination of parental rights, and 14 (58.33%) require only clear and convincing evidence to terminate parental rights of rapists.
+
+```{r}
+data %>%
+  filter(post_2015 == "Yes") %>%
+  ggplot(aes(x = factor(law_strength))) +
+  geom_bar(fill = "black") +
+  theme_minimal() +
+  labs(x = "Law Strength", y = "Number of States")
+
+data %>%
+  filter(post_2015 == "Yes") %>%
+  group_by(factor(law_strength)) %>%
+  count() %>%
+  ungroup() %>%
+  mutate(prop = n/sum(n)) %>%
+  rename(`Law Strength` = "factor(law_strength)", `Number of States` = "n",
+         `Proportion (Law Passed after 2015)` = "prop")
+```
+
+
+* There are only 16 states that use “clear and convincing evidence” as a burden of proof for terminating parental rights of rapists, and 14 of those states (87.5%) passed legislation AFTER 2015.
+
+```{r}
+data %>%
+  filter(law_strength == 5) %>%
+  group_by(post_2015) %>%
+  count() %>%
+  ggplot(aes(x = post_2015, y = n)) +
+  geom_col(fill = "black") +
+  theme_minimal() +
+  labs(x = "Did the State pass legislation after 2015?", y = "Number of States",
+       title = "States that passed legislation after 2015", 
+       subtitle = "For States with Law Strength of 5")
+```
+
+
+* 6 (37.5%) “blue” (majority democratic legislators in the state legislature), 2 (12.5%) “purple” (split between democratic and republican legislators in the state legislature) and 8 (50%) “red” (majority republican legislators in the state legislature) states use the clear and convincing standard. There seems to be no significant variation along party lines with regard to a higher burden of proof.
+
+```{r, eval = FALSE}
+# Still working this out
+data %>%
+  filter(law_strength == 5) %>%
+  mutate(party = case_when(Senate == "R" & House == "R" ~ "Red",
+                           Senate == "D" & House == "D" ~ "Blue"))
+```
+
+* 14 states who passed legislation to terminate the parental rights of rapists had democratically controlled legislatures at the time of passage, 5 were split, and 30 were republican-controlled.
+
+* 21 states currently require a rape conviction for TPR. Of those states, 4 (19%) were “blue”, 14 (66.67%) were “red”, and 3 (14.29%) were “purple” at the time of passage.
+
+* This shows the distribution of years of when the legislation was passed
+```{r}
+data %>%
+  ggplot(aes(x = year_passage)) +
+  geom_density() +
+  theme_minimal()
+```
+
+* This shows when each state passed the legislation, going from earliest to latest (we can make a gif out of this!!)
+
+```{r}
+data %>%
+  arrange(year_passage) %>%
+  ggplot(aes(y = State, x = year_passage, label = State, color = factor(law_strength))) +
+  geom_text(size = 2.5) +
+  theme_minimal() +
+  labs(x = "Year Legislation Passed", color = "Law Strength") +
+  theme(axis.text.y = element_blank(),
+        legend.position = "bottom") +
+  scale_x_continuous(breaks = seq(1992, 2020, 3))
+```
+
+```{r echo=FALSE, fig.align='center', dpi=600}
+knitr::include_graphics("files/year_passage.gif")
+```
+
