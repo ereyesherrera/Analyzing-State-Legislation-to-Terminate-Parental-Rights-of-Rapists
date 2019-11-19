@@ -66,7 +66,8 @@ Variable                    Meaning
 ```{r, warning=FALSE, message=FALSE}
 data <- read_csv("Honors_stats_updated_nov18_2.csv")
 data <- data %>%
-  select(-X22)
+  select(-X22) %>%
+  mutate(post_2015 = fct_collapse(post_2015, Yes = c("Yes", "yes")))
 
 data
 ```
