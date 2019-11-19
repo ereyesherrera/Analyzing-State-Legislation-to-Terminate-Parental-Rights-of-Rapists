@@ -161,6 +161,12 @@ data %>%
         plot.caption = element_text(face = "italic", hjust = 0.5, size = 10))
 ```
 
+**QUESTIONS FROM EMMA:** 
+
+*1. funny that wyoming is grouped with MN for law strength, since 1 is coded as "no law", and WY does have a law, albeit low in strength, any idea for why this might be?? *
+
+
+
 Comparing the two maps above, we find some surprising results. For example, the group of West Coast and some East Coast states that were coded as being in Cluster 2 - the best cluster - only have a strength of 2 for the legislation they have in place. Based on the clustering performed above, we would expect these states to have a strong legislation since they seem to be most progressive and have the most representation for women liberal ideals. Conversely, we see that states such as Florida, Mississippi and Georgia who were placed in Cluster 1 or Cluster 2 - the worse clusters - have much better law strengths. 
 
 There are many possible explanations for this effect. One of them may be that those states in which have lower "equality" for women may need to have stronger laws in place to protect them because of their "make-up" in terms of treatment towards women. (NEED EMMA FOR THIS PART)
@@ -246,6 +252,10 @@ data %>%
          `Proportion (Law Passed after 2015)` = "prop")
 ```
 
+**QUESTION FROM EMMA**
+
+*Why are there so few states on here? What exactly is this modeling?*
+
 
 * There are only 16 states that use “clear and convincing evidence” as a burden of proof for terminating parental rights of rapists, and 14 of those states (87.5%) passed legislation AFTER 2015.
 
@@ -262,6 +272,9 @@ data %>%
        subtitle = "For States with Law Strength of 5")
 ```
 
+**QUESTION FROM EMMA**
+
+*What's up with the second yes? just a capitalization mistake?*
 
 * 6 (37.5%) “blue” (majority democratic legislators in the state legislature), 2 (12.5%) “purple” (split between democratic and republican legislators in the state legislature) and 8 (50%) “red” (majority republican legislators in the state legislature) states use the clear and convincing standard. There seems to be no significant variation along party lines with regard to a higher burden of proof.
 
