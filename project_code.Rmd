@@ -258,7 +258,7 @@ This map summarizes the information found in the table for each state. It is int
 
 ```{r, warning=FALSE, message=FALSE}
 # Loading shape file for all states 
-shp <- read_sf("tl_2017_us_state/tl_2017_us_state.shp")
+shp <- read_sf("files/tl_2017_us_state/tl_2017_us_state.shp")
 
 # Removing territories and arranging in alphabetical order
 shp <- shp %>%
