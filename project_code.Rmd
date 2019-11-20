@@ -44,7 +44,7 @@ knitr::opts_chunk$set(results = "hold", fig.show = "hold", fig.align = "center",
 
 Variable                    Meaning
 --------------------------  --------
-`state`                     identifying variable
+`state`                     identifying variable/cases
 `pop`                       size of population
 `lgl_abortion_clinics`      Number of legal abortion clinics available to women in the state
 `health_clinics`            women's health clinics that do not provide abortion services
@@ -59,9 +59,9 @@ Variable                    Meaning
 `year_amend`                when/if the bill was amended to expand restrictions from requiring a rape conviction to clear and convincing evidence
 `post_2015`                 whether the bill was passed before or after 2015, when the Obama Administration issued grant money to any state that made this issue a legislative priority
 `bill_name`                 name of legaislation passed in the state
-`perc_women`                percent of women 
-`perc_demo_senate`	        percent of members in the state senate that are of the Democratic party
-`perc_demo_house`	          percent of members in the state house that are of the Democratic party
+`perc_women`                percent of women in both chambers combined at the times of the bill's passage 
+`perc_demo_senate`	        percent of members in the state senate that are of the Democratic party at the time of the bill's passage
+`perc_demo_house`	          percent of members in the state house that are of the Democratic party at the time of the bill's passage
 `Senate`	                  party that controlled state senate during the passage of the legislation; D = Democrat, R = Republican, P = Split, B = Bipartisan, N/A = Does not apply (legislation not passed)
 `House`	                    party that controlled state house during the passage of the legislation
 `Governor`                  governor's party affiliation
@@ -114,7 +114,7 @@ clusters <- as.factor(cutree(hier_model, k = 3))
 ```
 
 
-```{r}
+```{r cluster_no_law}
 # Mapping initial clustering results
 states_map <- map_data("state")
 
@@ -148,7 +148,7 @@ From this map, we are able to visualize the which states are similar in terms of
 
 Taking into account the metric above in our cluster analysis, we want to compare how each state *actually* rules on this legislation to how they seem that they would on paper based on the variables above. As such, we created another map that shows the law strength for each state, with 1 being the "worst" (i.e.nothing in place) and 5 being the best (i.e. clear and convincing).
 
-```{r}
+```{r map_of_law}
 # Mapping states and law strength
 data %>%
   mutate(State = tolower(State)) %>%
@@ -196,7 +196,7 @@ plot(hier_model2, cex = 0.8, xlab = "", main = " Dendrogram Accounting for Law S
 clusters2 <- as.factor(cutree(hier_model2, k = 3))
 ```
 
-```{r}
+```{r cluster_map_law}
 # Calculating the mean of each feature for each cluster when there are 3 clusters
 my_cluster_data2 %>%
   mutate(cluster = clusters2) %>% group_by(cluster) %>%
@@ -237,7 +237,7 @@ data <- data %>%
                            perc_demo_senate > 50 & perc_demo_house > 50 ~ "Blue",
                            perc_demo_senate == 50 & perc_demo_house == 50 ~ "Purple",
                            perc_demo_senate <= 50 & perc_demo_house >= 50 ~ "Purple",
-                           perc_demo_senate >= 50 & perc_demo_house <= 50 ~ "Purple"))
+                           perc_demo_senate >= 50 & perc_demo_house <= 50 ~ "Purple")) #what do we do with the Bipartisan (B) groups?
 ```
 
 
@@ -312,7 +312,7 @@ data %>%
 
 * Of the 23 states (nearly half) that passed legislation after 2015, 17 (73.9%) of them do not require a rape conviction for termination of parental rights, and 13 (56.5%) require only clear and convincing evidence to terminate parental rights of rapists.
 
-```{r}
+```{r law_str_2015}
 data %>%
   filter(post_2015 == "Yes") %>%
   group_by(factor(law_strength)) %>%
@@ -335,7 +335,7 @@ data %>%
 
 * There are only 15 states that use “clear and convincing evidence” as a burden of proof for terminating parental rights of rapists, and 13 of those states (86.6%) passed legislation AFTER 2015.
 
-```{r}
+```{r law_str5_2015}
 data %>%
   filter(law_strength == 5) %>%
   group_by(post_2015) %>%
@@ -351,7 +351,7 @@ data %>%
 
 * 6 (40%) “blue” (majority democratic legislators in the state legislature), 2 (13.3%) “purple” (split between democratic and republican legislators in the state legislature) and 7 (46.6%) “red” (majority republican legislators in the state legislature) states use the clear and convincing standard. There seems to be no significant variation along party lines with regard to a higher burden of proof.
 
-```{r}
+```{r clr_convinc_party}
 data %>%
   filter(law_strength == 5) %>%
   group_by(party) %>%
@@ -379,7 +379,7 @@ data %>%
   scale_fill_manual(values = c("blue", "purple", "red", "gray"))
 ```
 
-```{r}
+```{r rape_conv_party}
 data %>%
   filter(law_strength == 2) %>%
   group_by(party) %>%
@@ -407,7 +407,7 @@ data %>%
   scale_fill_manual(values = c("blue", "purple", "red", "gray"))
 ```
 
-* 24 states currently require a rape conviction for TPR. Of those states, 10 (19%) were “blue”, 13 (66.67%) were “red”, and 2 (14.29%) were “purple” at the time of passage.
+
 
 ```{r}
 data %>%
@@ -439,7 +439,23 @@ data %>%
        fill = "Law Strength")
 ```
 
-* 16 states who passed legislation to terminate the parental rights of rapists had democratically controlled legislatures at the time of passage, 7 were split, and 25 were republican-controlled. The NA shows information on Nebraska, which has a Bipartisan legislature and this does not apply in this analysis. Minnesota is not included because they do not have anything in place.
+**Analysis: 24 states currently require a rape conviction for TPR. Of those states, 6 (25%) were “blue”, 12 (50%) were “red”, and 5 (20.83%) were “purple” at the time of passage. 15 states currently use the clear and convincing standard, 6 (40%) are "blue", 2 (13.3%) are "purple", and 7 (46.7%) are "red." From this vizualization, we can glean several things. Firstly, there seems to be no disernible difference for democratic leaning states in terms of whether they pass this legislation requiring a rape conviction or clear and convincing evidence, whereas among republican or "red" states, there is a much higher tendency to pass legislation requiring a rape conviction than clear and convincing evidence as a standard. Secondly, across the board, the majority of states passing legislation are republican favored. Thirdly, the ratio of partisan states requiring a rape conviction (6:12) is much more pronounced than the ratio of partisan states requiring clear and convincing evidence (6:7).**
+
+This plot is a combination of the previous 3. It shows the # of states for each law strength, broken up by party.
+```{r}
+data %>% 
+  group_by(law_strength, party) %>% 
+  count() %>% 
+ 
+  ggplot(aes(x = law_strength, y = n)) +
+  geom_col(aes(fill = party), position = position_dodge()) +
+  scale_fill_manual(values = c("blue", "purple", "red", "grey")) + #why does this get rid of NA? Should be an NA in strength 1 and strength 2. 
+  theme_minimal() +
+  labs(x = "Strength of Law", y = "Number of States", title = "Law Strength by Number of States and Party", fill = "Party")
+```
+
+
+* 16 states who passed legislation to terminate the parental rights of rapists had Democratically controlled legislatures at the time of passage, 7 were split, and 25 were republican-controlled. The NA shows information on Nebraska, which has a Bipartisan legislature and this does not apply in this analysis. Minnesota is not included because they do not have anything in place.
 
 ```{r}
 data %>%
