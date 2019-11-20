@@ -25,6 +25,8 @@ library(tibble)
 library(skimr)
 library(naniar)
 library(gridExtra)
+library(sf)
+library(htmltools)
 ```
 
 ```{r setup, echo=FALSE}
@@ -252,6 +254,61 @@ data %>%
   rename("Law Strength" = "law_strength", "Color of State During Passage of Law" = "party")
 ```
 
+This map summarizes the information found in the table for each state. It is interactive so if you click on the state, a box will pop up with all of its information.
+
+```{r, warning=FALSE, message=FALSE}
+# Loading shape file for all states 
+shp <- read_sf("tl_2017_us_state/tl_2017_us_state.shp")
+
+# Removing territories and arranging in alphabetical order
+shp <- shp %>%
+  filter(!NAME %in% c("Puerto Rico", "Guam", "Commonwealth of the Northern Mariana Islands", "United States Virgin Islands", "American Samoa", "District of Columbia")) %>%
+  arrange(NAME)
+
+# Creating info that will pop up when clicked on state
+state_popup <- paste0("<strong>State: </strong>", data$State,
+                     "<br><strong>Pop:</strong> ", data$Pop,
+                     "<br><strong>Prop. Abortion Clinics: </strong> ", data$prop_health,
+                     "<br><strong>Prop. Health Clinics: </strong>", data$prop_abortion,
+                     "<br><strong>Family Leave: </strong>", data$paid_fam_leave,
+                     "<br><strong>Prop. Equal Pay: </strong>", data$prop_equal_pay,
+                     "<br><strong>Equal Pay Rank: </strong>", data$equal_pay_rank,
+                     "<br><strong>Marital Exception: </strong>", data$marital_rape_except,
+                     "<br><strong>Year Law Passed: </strong>", data$year_passage,
+                     "<br><strong>Year Ammended: </strong>",  data$year_amend,
+                     "<br><strong>Controlling Party During Passage: </strong>", data$party)
+
+# Creating Palette for Law Strength for each state
+pal <- colorFactor("viridis", 
+                     domain = factor(data$law_strength))
+# Map
+leaflet(shp) %>%
+  addTiles() %>%
+  addPolygons(popup = state_popup, fillColor = ~pal(factor(data$law_strength)),
+              stroke = 0.2, color = ~pal(factor(data$law_strength)), fillOpacity = 0.7, 
+              smoothFactor = 0.5, 
+              highlight = highlightOptions(weight = 5, 
+                                 color = "black",
+                                 fillOpacity = 0.9,
+                                 bringToFront = FALSE)) %>%
+  addLegend(pal = pal, 
+            values = ~factor(data$law_strength), 
+            opacity = 0.5, 
+            title = "Law Strength",
+            position = "bottomright")
+```
+
+Comparing three states with different levels of partisanship:
+
+```{r}
+data %>%
+  mutate_all(as.character) %>%
+  filter(State %in% c("Nebraska", "California", "Alabama")) %>%
+  pivot_longer(-State, names_to = "Metrics", values_to = "Values") %>%
+  pivot_wider(names_from = State, values_from = Values)
+```
+
+
 
 * Of the 23 states (nearly half) that passed legislation after 2015, 17 (73.9%) of them do not require a rape conviction for termination of parental rights, and 13 (56.5%) require only clear and convincing evidence to terminate parental rights of rapists.
 
@@ -440,3 +497,6 @@ data %>%
 knitr::include_graphics("files/year_passage.gif")
 ```
 
+# References
+
+https://catalog.data.gov/dataset/tiger-line-shapefile-2017-nation-u-s-current-state-and-equivalent-national
