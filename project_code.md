@@ -181,12 +181,6 @@ data %>%
 
 <img src="project_code_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" />
 
-**QUESTIONS FROM EMMA:** 
-
-*1. funny that wyoming is grouped with MN for law strength, since 1 is coded as "no law", and WY does have a law, albeit low in strength, any idea for why this might be?? *
-
-
-
 Comparing the two maps above, we find some surprising results. For example, the group of West Coast and some East Coast states that were coded as being in Cluster 2 - the best cluster - only have a strength of 2 for the legislation they have in place. Based on the clustering performed above, we would expect these states to have a strong legislation since they seem to be most progressive and have the most representation for women liberal ideals. Conversely, we see that states such as Florida, Mississippi and Georgia who were placed in Cluster 1 or Cluster 2 - the worse clusters - have much better law strengths. 
 
 There are many possible explanations for this effect. One of them may be that those states in which have lower "equality" for women may need to have stronger laws in place to protect them because of their "make-up" in terms of treatment towards women. (NEED EMMA FOR THIS PART)
@@ -260,9 +254,9 @@ The breakdown in groups is very similar to the original clustering analysis, but
 * **Cluster 3**: States whose representation in the state legislature is strongly favored towards Democratic and the most representation of women. These states have the most resources for women and the best "equality", with an average law strength of about 3 (Best in our analysis).
 
 
-# Other things to keep in mind as we make visualizations
+# Other visualizations/wrangling we will organize
 
-The following updates our original data and adds a nw column to designate if a state was red or blue at the time
+The following updates our original data and adds a new column to designate if a state was red or blue at the time
 
 
 ```r
@@ -270,9 +264,33 @@ data <- data %>%
   mutate(party = case_when(perc_demo_senate < 50 & perc_demo_house < 50 ~ "Red",
                            perc_demo_senate > 50 & perc_demo_house > 50 ~ "Blue",
                            perc_demo_senate == 50 & perc_demo_house == 50 ~ "Purple",
-                           perc_demo_senate < 50 & perc_demo_house > 50 ~ "Purple",
-                           perc_demo_senate > 50 & perc_demo_house < 50 ~ "Purple"))
+                           perc_demo_senate <= 50 & perc_demo_house >= 50 ~ "Purple",
+                           perc_demo_senate >= 50 & perc_demo_house <= 50 ~ "Purple"))
 ```
+
+The following shows the breakdown of how many states have each of the five law strengths, as well as a table showing the states and their strength law and the color of the state at the time of passage.
+
+
+```r
+data %>%
+  group_by(law_strength) %>%
+  count() %>%
+  rename("Law Strength" = "law_strength", "Number of States" = "n")
+
+data %>%
+  select(State, law_strength, party) %>%
+  rename("Law Strength" = "law_strength", "Color of State During Passage of Law" = "party")
+```
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Law Strength"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Number of States"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"1","2":"1"},{"1":"2","2":"24"},{"1":"3","2":"9"},{"1":"4","2":"1"},{"1":"5","2":"15"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div><div data-pagedtable="false">
+  <script data-pagedtable-source type="application/json">
+{"columns":[{"label":["State"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Law Strength"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Color of State During Passage of Law"],"name":[3],"type":["chr"],"align":["left"]}],"data":[{"1":"Alabama","2":"2","3":"Red"},{"1":"Alaska","2":"3","3":"Red"},{"1":"Arizona","2":"2","3":"Red"},{"1":"Arkansas","2":"2","3":"Red"},{"1":"California","2":"2","3":"Blue"},{"1":"Colorado","2":"5","3":"Blue"},{"1":"Connecticut","2":"5","3":"Blue"},{"1":"Delaware","2":"2","3":"Purple"},{"1":"Florida","2":"5","3":"Red"},{"1":"Georgia","2":"5","3":"Red"},{"1":"Hawaii","2":"5","3":"Blue"},{"1":"Idaho","2":"3","3":"Red"},{"1":"Illinois","2":"3","3":"Blue"},{"1":"Indiana","2":"5","3":"Red"},{"1":"Iowa","2":"5","3":"Purple"},{"1":"Kansas","2":"2","3":"Red"},{"1":"Kentucky","2":"2","3":"Purple"},{"1":"Louisiana","2":"3","3":"Red"},{"1":"Maine","2":"5","3":"Purple"},{"1":"Maryland","2":"5","3":"Blue"},{"1":"Massachusetts","2":"2","3":"Blue"},{"1":"Michigan","2":"5","3":"Red"},{"1":"Minnesota","2":"1","3":"NA"},{"1":"Mississippi","2":"5","3":"Red"},{"1":"Missouri","2":"2","3":"Blue"},{"1":"Montana","2":"5","3":"Red"},{"1":"Nebraska","2":"2","3":"NA"},{"1":"Nevada","2":"3","3":"Blue"},{"1":"New Hampshire","2":"4","3":"Red"},{"1":"New Jersey","2":"2","3":"Blue"},{"1":"New Mexico","2":"3","3":"Blue"},{"1":"New York","2":"2","3":"Blue"},{"1":"North Carolina","2":"2","3":"Red"},{"1":"North Dakota","2":"2","3":"Red"},{"1":"Ohio","2":"2","3":"Red"},{"1":"Oklahoma","2":"3","3":"Red"},{"1":"Oregon","2":"2","3":"Purple"},{"1":"Pennsylvania","2":"2","3":"Purple"},{"1":"Rhode Island","2":"2","3":"Blue"},{"1":"South Carolina","2":"2","3":"Red"},{"1":"South Dakota","2":"5","3":"Red"},{"1":"Tennessee","2":"2","3":"Red"},{"1":"Texas","2":"2","3":"Purple"},{"1":"Utah","2":"2","3":"Red"},{"1":"Vermont","2":"5","3":"Blue"},{"1":"Virginia","2":"2","3":"Red"},{"1":"Washington","2":"5","3":"Blue"},{"1":"West Virginia","2":"3","3":"Blue"},{"1":"Wisconsin","2":"3","3":"Red"},{"1":"Wyoming","2":"2","3":"Red"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 
 
 * Of the 23 states (nearly half) that passed legislation after 2015, 17 (73.9%) of them do not require a rape conviction for termination of parental rights, and 13 (56.5%) require only clear and convincing evidence to terminate parental rights of rapists.
@@ -293,14 +311,14 @@ data %>%
   ungroup() %>%
   mutate(prop = n/sum(n)) %>%
   rename(`Law Strength` = "factor(law_strength)", `Number of States` = "n",
-         `Proportion (Law Passed after 2015)` = "prop")
+         `Proportion (Laws Passed after 2015)` = "prop")
 ```
 
 <div data-pagedtable="false">
   <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Law Strength"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["Number of States"],"name":[2],"type":["int"],"align":["right"]},{"label":["Proportion (Law Passed after 2015)"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"2","2":"6","3":"0.2727273"},{"1":"3","2":"3","3":"0.1363636"},{"1":"5","2":"13","3":"0.5909091"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Law Strength"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["Number of States"],"name":[2],"type":["int"],"align":["right"]},{"label":["Proportion (Laws Passed after 2015)"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"2","2":"6","3":"0.2727273"},{"1":"3","2":"3","3":"0.1363636"},{"1":"5","2":"13","3":"0.5909091"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
-</div><img src="project_code_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
+</div><img src="project_code_files/figure-html/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
 
 
 * There are only 15 states that use “clear and convincing evidence” as a burden of proof for terminating parental rights of rapists, and 13 of those states (86.6%) passed legislation AFTER 2015.
@@ -319,7 +337,7 @@ data %>%
        subtitle = "For States with Law Strength of 5")
 ```
 
-<img src="project_code_files/figure-html/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
+<img src="project_code_files/figure-html/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
 
 * 6 (40%) “blue” (majority democratic legislators in the state legislature), 2 (13.3%) “purple” (split between democratic and republican legislators in the state legislature) and 7 (46.6%) “red” (majority republican legislators in the state legislature) states use the clear and convincing standard. There seems to be no significant variation along party lines with regard to a higher burden of proof.
 
@@ -331,19 +349,102 @@ data %>%
   count() %>% 
   ungroup() %>%
   mutate(`Percentage` = n/sum(n)) %>%
-  rename(`Number of States` = "n")
+  rename(`Number of States with Law Strength 5` = "n", 
+         "Color of State during Passage of Law" = "party")
+
+data %>%
+  filter(law_strength == 5) %>%
+  group_by(party) %>%
+  count() %>% 
+  ungroup() %>%
+  mutate(`Percentage` = n/sum(n)) %>%
+  rename(`Number of States with Law Strength 5` = "n", 
+         "Color of State during Passage of Law" = "party") %>%
+  ggplot(aes(x = `Color of State during Passage of Law`, 
+             y = `Number of States with Law Strength 5`)) +
+  geom_col(aes(fill = `Color of State during Passage of Law`))+
+  theme_minimal() +
+  theme(legend.position = "none") +
+  scale_fill_manual(values = c("blue", "purple", "red"))
 ```
 
 <div data-pagedtable="false">
   <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["party"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Number of States"],"name":[2],"type":["int"],"align":["right"]},{"label":["Percentage"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Blue","2":"6","3":"0.4000000"},{"1":"Purple","2":"2","3":"0.1333333"},{"1":"Red","2":"7","3":"0.4666667"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Color of State during Passage of Law"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Number of States with Law Strength 5"],"name":[2],"type":["int"],"align":["right"]},{"label":["Percentage"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Blue","2":"6","3":"0.4000000"},{"1":"Purple","2":"2","3":"0.1333333"},{"1":"Red","2":"7","3":"0.4666667"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
-</div>
+</div><img src="project_code_files/figure-html/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
 
-* 14 states who passed legislation to terminate the parental rights of rapists had democratically controlled legislatures at the time of passage, 5 were split, and 30 were republican-controlled.
+* 16 states who passed legislation to terminate the parental rights of rapists had democratically controlled legislatures at the time of passage, 7 were split, and 25 were republican-controlled. The NA shows information on Nebraska, which has a Bipartisan legislature and this does not apply in this analysis. Minnesota is not included because they do not have anything in place.
 
 
-* 21 states currently require a rape conviction for TPR. Of those states, 4 (19%) were “blue”, 14 (66.67%) were “red”, and 3 (14.29%) were “purple” at the time of passage.
+```r
+data %>%
+  filter(law_strength != 1) %>%
+  group_by(party) %>%
+  count() %>% 
+  ungroup() %>%
+  mutate(`Percentage` = n/sum(n)) %>%
+  rename(`Number of States` = "n", "Color of State during Passage of Law" = "party")
+
+data %>%
+  filter(law_strength != 1) %>%
+  group_by(party) %>%
+  count() %>% 
+  ungroup() %>%
+  mutate(`Percentage` = n/sum(n)) %>%
+  rename(`Number of States` = "n", "Color of State during Passage of Law" = "party") %>%
+  ggplot(aes(x = `Color of State during Passage of Law`, y = `Number of States`)) +
+  geom_col(aes(fill = `Color of State during Passage of Law`)) +
+  labs(title = "States that passed legislation to terminate the parental rights of rapists") +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  scale_fill_manual(values = c("blue", "purple", "red", "gray"))
+```
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Color of State during Passage of Law"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Number of States"],"name":[2],"type":["int"],"align":["right"]},{"label":["Percentage"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Blue","2":"16","3":"0.32653061"},{"1":"Purple","2":"7","3":"0.14285714"},{"1":"Red","2":"25","3":"0.51020408"},{"1":"NA","2":"1","3":"0.02040816"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div><img src="project_code_files/figure-html/unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
+
+
+
+* 24 states currently require a rape conviction for TPR. Of those states, 10 (19%) were “blue”, 13 (66.67%) were “red”, and 2 (14.29%) were “purple” at the time of passage.
+
+
+```r
+data %>%
+  filter(law_strength != 2) %>%
+  group_by(party) %>%
+  count() %>%
+  ungroup() %>%
+  mutate(`Percentage` = n/sum(n)) %>%
+  rename(`Number of States Requiring Rape Conviction` = "n", 
+         "Color of State during Passage of Law" = "party")
+  
+data %>%
+  filter(law_strength != 2) %>%
+  group_by(party) %>%
+  count() %>%
+  ungroup() %>%
+  mutate(`Percentage` = n/sum(n)) %>%
+  rename(`Number of States Requiring Rape Conviction` = "n", 
+         "Color of State during Passage of Law" = "party") %>%
+  ggplot(aes(x = `Color of State during Passage of Law`,
+             y = `Number of States Requiring Rape Conviction`)) +
+  geom_col(aes(fill = `Color of State during Passage of Law`)) +
+  labs(title = "States that Require Rape Conviction", subtitle = "(Law Strength of 2)") +
+  theme_minimal() + 
+  theme(legend.position = "none") +
+  scale_fill_manual(values = c("blue", "purple", "red", "gray"))
+```
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Color of State during Passage of Law"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Number of States Requiring Rape Conviction"],"name":[2],"type":["int"],"align":["right"]},{"label":["Percentage"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Blue","2":"10","3":"0.38461538"},{"1":"Purple","2":"2","3":"0.07692308"},{"1":"Red","2":"13","3":"0.50000000"},{"1":"NA","2":"1","3":"0.03846154"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div><img src="project_code_files/figure-html/unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
+
 
 * This shows the distribution of years of when the legislation was passed
 
@@ -358,7 +459,7 @@ data %>%
 ## Warning: Removed 1 rows containing non-finite values (stat_density).
 ```
 
-<img src="project_code_files/figure-html/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
+<img src="project_code_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto;" />
 
 * This shows when each state passed the legislation, going from earliest to latest
 
@@ -379,7 +480,7 @@ data %>%
 ## Warning: Removed 1 rows containing missing values (geom_text).
 ```
 
-<img src="project_code_files/figure-html/unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
+<img src="project_code_files/figure-html/unnamed-chunk-15-1.png" style="display: block; margin: auto;" />
 
 <img src="files/year_passage.gif" style="display: block; margin: auto;" />
 
