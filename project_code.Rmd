@@ -238,6 +238,7 @@ data <- data %>%
                            perc_demo_senate >= 50 & perc_demo_house <= 50 ~ "Purple"))
 ```
 
+
 The following shows the breakdown of how many states have each of the five law strengths, as well as a table showing the states and their strength law and the color of the state at the time of passage.
 
 ```{r}
@@ -257,19 +258,21 @@ data %>%
 ```{r}
 data %>%
   filter(post_2015 == "Yes") %>%
-  ggplot(aes(x = factor(law_strength))) +
-  geom_bar(fill = "black") +
-  theme_minimal() +
-  labs(x = "Law Strength", y = "Number of States")
-
-data %>%
-  filter(post_2015 == "Yes") %>%
   group_by(factor(law_strength)) %>%
   count() %>%
   ungroup() %>%
   mutate(prop = n/sum(n)) %>%
   rename(`Law Strength` = "factor(law_strength)", `Number of States` = "n",
          `Proportion (Laws Passed after 2015)` = "prop")
+
+data %>%
+  filter(post_2015 == "Yes") %>%
+  ggplot(aes(x = factor(law_strength))) +
+  geom_bar(fill = "black") +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold")) +
+  labs(x = "Law Strength", y = "Number of States", title = "Law Strength",
+       subtitle = "For States that Passed Legislation after 2015")
 ```
 
 
@@ -283,6 +286,7 @@ data %>%
   ggplot(aes(x = post_2015, y = n)) +
   geom_col(fill = "black") +
   theme_minimal() +
+  theme(plot.title = element_text(face = "bold")) +
   labs(x = "Did the State pass legislation after 2015?", y = "Number of States",
        title = "States that passed legislation after 2015", 
        subtitle = "For States with Law Strength of 5")
@@ -294,26 +298,88 @@ data %>%
 data %>%
   filter(law_strength == 5) %>%
   group_by(party) %>%
-  count() %>% 
+  count() %>%
   ungroup() %>%
   mutate(`Percentage` = n/sum(n)) %>%
-  rename(`Number of States with Law Strength 5` = "n", 
-         "Color of State during Passage of Law" = "party")
-
+  rename(`Number of States with Clear and Convincing Standard` = "n", 
+         "Party Affiliation of State during Passage of Law" = "party")
+  
 data %>%
   filter(law_strength == 5) %>%
   group_by(party) %>%
-  count() %>% 
+  count() %>%
   ungroup() %>%
   mutate(`Percentage` = n/sum(n)) %>%
-  rename(`Number of States with Law Strength 5` = "n", 
-         "Color of State during Passage of Law" = "party") %>%
-  ggplot(aes(x = `Color of State during Passage of Law`, 
-             y = `Number of States with Law Strength 5`)) +
-  geom_col(aes(fill = `Color of State during Passage of Law`))+
+  rename(`Number of States with Clear and Convincing Standard` = "n", 
+         "Party Affiliation of State during Passage of Law" = "party") %>%
+  ggplot(aes(x = `Party Affiliation of State during Passage of Law`,
+             y = `Number of States with Clear and Convincing Standard`)) +
+  geom_col(aes(fill = `Party Affiliation of State during Passage of Law`)) +
+  labs(title = "States with Clear and Convincing Standard", subtitle = "(Law Strength of 5)") +
+  theme_minimal() + 
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold")) +
+  scale_fill_manual(values = c("blue", "purple", "red", "gray"))
+```
+
+```{r}
+data %>%
+  filter(law_strength == 2) %>%
+  group_by(party) %>%
+  count() %>%
+  ungroup() %>%
+  mutate(`Percentage` = n/sum(n)) %>%
+  rename(`Number of States Requiring Rape Conviction` = "n", 
+         "Party Affiliation of State during Passage of Law" = "party")
+  
+data %>%
+  filter(law_strength == 2) %>%
+  group_by(party) %>%
+  count() %>%
+  ungroup() %>%
+  mutate(`Percentage` = n/sum(n)) %>%
+  rename(`Number of States Requiring Rape Conviction` = "n", 
+         "Party Affiliation of State during Passage of Law" = "party") %>%
+  ggplot(aes(x = `Party Affiliation of State during Passage of Law`,
+             y = `Number of States Requiring Rape Conviction`)) +
+  geom_col(aes(fill = `Party Affiliation of State during Passage of Law`)) +
+  labs(title = "States that Require Rape Conviction", subtitle = "(Law Strength of 2)") +
+  theme_minimal() + 
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold")) +
+  scale_fill_manual(values = c("blue", "purple", "red", "gray"))
+```
+
+* 24 states currently require a rape conviction for TPR. Of those states, 10 (19%) were “blue”, 13 (66.67%) were “red”, and 2 (14.29%) were “purple” at the time of passage.
+
+```{r}
+data %>%
+  filter(law_strength %in% c(2, 5)) %>%
+  group_by(party, law_strength) %>%
+  count() %>% 
+  ungroup() %>%
+  group_by(law_strength) %>%
+  mutate(`Percentage` = n/sum(n)) %>%
+  rename(`Number of States with Law Strength` = "n", 
+         "Party Affiliation of State during Passage of Law" = "party")
+
+data %>%
+  filter(law_strength %in% c(2, 5)) %>%
+  group_by(party, law_strength) %>%
+  count() %>% 
+  ungroup() %>%
+  group_by(law_strength) %>%
+  mutate(`Percentage` = n/sum(n)) %>%
+  rename(`Number of States with Law Strength` = "n", 
+         "Party Affiliation of State during Passage of Law" = "party") %>%
+  ggplot(aes(x = `Party Affiliation of State during Passage of Law`, 
+             y = `Number of States with Law Strength`)) +
+  geom_col(aes(fill = factor(law_strength)), position = position_dodge())+
   theme_minimal() +
-  theme(legend.position = "none") +
-  scale_fill_manual(values = c("blue", "purple", "red"))
+  theme(plot.title = element_text(face = "bold")) +
+  labs(y = "Number of States", 
+       title = "Party Affiliation for States with Law Strength 2 and 5", 
+       fill = "Law Strength")
 ```
 
 * 16 states who passed legislation to terminate the parental rights of rapists had democratically controlled legislatures at the time of passage, 7 were split, and 25 were republican-controlled. The NA shows information on Nebraska, which has a Bipartisan legislature and this does not apply in this analysis. Minnesota is not included because they do not have anything in place.
@@ -338,38 +404,7 @@ data %>%
   geom_col(aes(fill = `Color of State during Passage of Law`)) +
   labs(title = "States that passed legislation to terminate the parental rights of rapists") +
   theme_minimal() +
-  theme(legend.position = "none") +
-  scale_fill_manual(values = c("blue", "purple", "red", "gray"))
-```
-
-
-
-* 24 states currently require a rape conviction for TPR. Of those states, 10 (19%) were “blue”, 13 (66.67%) were “red”, and 2 (14.29%) were “purple” at the time of passage.
-
-```{r}
-data %>%
-  filter(law_strength != 2) %>%
-  group_by(party) %>%
-  count() %>%
-  ungroup() %>%
-  mutate(`Percentage` = n/sum(n)) %>%
-  rename(`Number of States Requiring Rape Conviction` = "n", 
-         "Color of State during Passage of Law" = "party")
-  
-data %>%
-  filter(law_strength != 2) %>%
-  group_by(party) %>%
-  count() %>%
-  ungroup() %>%
-  mutate(`Percentage` = n/sum(n)) %>%
-  rename(`Number of States Requiring Rape Conviction` = "n", 
-         "Color of State during Passage of Law" = "party") %>%
-  ggplot(aes(x = `Color of State during Passage of Law`,
-             y = `Number of States Requiring Rape Conviction`)) +
-  geom_col(aes(fill = `Color of State during Passage of Law`)) +
-  labs(title = "States that Require Rape Conviction", subtitle = "(Law Strength of 2)") +
-  theme_minimal() + 
-  theme(legend.position = "none") +
+  theme(legend.position = "none", plot.title = element_text(face = "bold")) +
   scale_fill_manual(values = c("blue", "purple", "red", "gray"))
 ```
 
@@ -379,7 +414,10 @@ data %>%
 data %>%
   ggplot(aes(x = year_passage)) +
   geom_density() +
-  theme_minimal()
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold")) +
+  labs(x = "Year Legislation Passed", y = "Density", 
+       title = "Distribution of Years in which States passed Legislation")
 ```
 
 * This shows when each state passed the legislation, going from earliest to latest
@@ -390,9 +428,11 @@ data %>%
   ggplot(aes(y = State, x = year_passage, label = State, color = factor(law_strength))) +
   geom_text(size = 2.5) +
   theme_minimal() +
-  labs(x = "Year Legislation Passed", color = "Law Strength") +
+  labs(x = "Year Legislation Passed", color = "Law Strength", 
+       title = "When Each State Passed Legislation") +
   theme(axis.text.y = element_blank(),
-        legend.position = "bottom") +
+        legend.position = "bottom",
+        plot.title = element_text(face = "bold")) +
   scale_x_continuous(breaks = seq(1992, 2020, 3))
 ```
 
