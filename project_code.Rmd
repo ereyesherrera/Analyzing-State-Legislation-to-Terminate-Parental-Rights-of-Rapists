@@ -57,9 +57,9 @@ Variable                    Meaning
 `year_amend`                when/if the bill was amended to expand restrictions from requiring a rape conviction to clear and convincing evidence
 `post_2015`                 whether the bill was passed before or after 2015, when the Obama Administration issued grant money to any state that made this issue a legislative priority
 `bill_name`                 name of legaislation passed in the state
-`perc_women`                percent of women 
-`perc_demo_senate`	        percent of members in the state senate that are of the Democratic party
-`perc_demo_house`	          percent of members in the state house that are of the Democratic party
+`perc_women`                percent of women in both chambers combined at the times of the bill's passage 
+`perc_demo_senate`	        percent of members in the state senate that are of the Democratic party at the time of the bill's passage
+`perc_demo_house`	          percent of members in the state house that are of the Democratic party at the time of the bill's passage
 `Senate`	                  party that controlled state senate during the passage of the legislation; D = Democrat, R = Republican, P = Split, B = Bipartisan, N/A = Does not apply (legislation not passed)
 `House`	                    party that controlled state house during the passage of the legislation
 `Governor`                  governor's party affiliation
