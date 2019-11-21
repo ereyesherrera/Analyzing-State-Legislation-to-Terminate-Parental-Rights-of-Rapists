@@ -30,7 +30,7 @@ library(htmltools)
 ```
 
 ```{r setup, echo=FALSE}
-knitr::opts_chunk$set(results = "hold", fig.show = "hold", fig.align = "center")
+knitr::opts_chunk$set(results = "hold", fig.show = "hold", fig.align = "center", warning = FALSE, message = FALSE, dpi = 200)
 ```
 
 
@@ -256,7 +256,7 @@ data %>%
 
 This map summarizes the information found in the table for each state. It is interactive so if you click on the state, a box will pop up with all of its information.
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, dpi = 150}
 # Loading shape file for all states 
 shp <- read_sf("files/tl_2017_us_state/tl_2017_us_state.shp")
 
@@ -275,7 +275,7 @@ state_popup <- paste0("<strong>State: </strong>", data$State,
                      "<br><strong>Equal Pay Rank: </strong>", data$equal_pay_rank,
                      "<br><strong>Marital Exception: </strong>", data$marital_rape_except,
                      "<br><strong>Year Law Passed: </strong>", data$year_passage,
-                     "<br><strong>Year Ammended: </strong>",  data$year_amend,
+                     "<br><strong>Year Amended: </strong>",  data$year_amend,
                      "<br><strong>Controlling Party During Passage: </strong>", data$party)
 
 # Creating Palette for Law Strength for each state
@@ -284,6 +284,7 @@ pal <- colorFactor("viridis",
 # Map
 leaflet(shp) %>%
   addTiles() %>%
+  setView(lng = -98.268082, lat = 41.125370, zoom = 2.47) %>%
   addPolygons(popup = state_popup, fillColor = ~pal(factor(data$law_strength)),
               stroke = 0.2, color = ~pal(factor(data$law_strength)), fillOpacity = 0.7, 
               smoothFactor = 0.5, 
@@ -436,7 +437,8 @@ data %>%
   theme(plot.title = element_text(face = "bold")) +
   labs(y = "Number of States", 
        title = "Party Affiliation for States with Law Strength 2 and 5", 
-       fill = "Law Strength")
+       fill = "Law Strength") +
+  scale_fill_brewer(palette = 7)
 ```
 
 **Analysis: 24 states currently require a rape conviction for TPR. Of those states, 6 (25%) were “blue”, 12 (50%) were “red”, and 5 (20.83%) were “purple” at the time of passage. 15 states currently use the clear and convincing standard, 6 (40%) are "blue", 2 (13.3%) are "purple", and 7 (46.7%) are "red." From this vizualization, we can glean several things. Firstly, there seems to be no disernible difference for democratic leaning states in terms of whether they pass this legislation requiring a rape conviction or clear and convincing evidence, whereas among republican or "red" states, there is a much higher tendency to pass legislation requiring a rape conviction than clear and convincing evidence as a standard. Secondly, across the board, the majority of states passing legislation are republican favored. Thirdly, the ratio of partisan states requiring a rape conviction (6:12) is much more pronounced than the ratio of partisan states requiring clear and convincing evidence (6:7).**
@@ -502,11 +504,14 @@ data %>%
   geom_text(size = 2.5) +
   theme_minimal() +
   labs(x = "Year Legislation Passed", color = "Law Strength", 
-       title = "When Each State Passed Legislation") +
+       title = "When Each State Passed Legislation", 
+       caption = "Note: Minnesota not included; only state that has not passed any legislation") +
   theme(axis.text.y = element_blank(),
         legend.position = "bottom",
-        plot.title = element_text(face = "bold")) +
-  scale_x_continuous(breaks = seq(1992, 2020, 3))
+        plot.title = element_text(face = "bold"), 
+        plot.caption = element_text(face = "italic", hjust = 0.5)) +
+  scale_x_continuous(breaks = seq(1990, 2020, 2)) +
+  scale_color_viridis_d() 
 ```
 
 ```{r echo=FALSE, fig.align='center', dpi=600}
