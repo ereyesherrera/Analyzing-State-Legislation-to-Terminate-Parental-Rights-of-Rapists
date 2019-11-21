@@ -311,7 +311,7 @@ data %>%
 
 
 
-* Of the 23 states (nearly half) that passed legislation after 2015, 17 (73.9%) of them do not require a rape conviction for termination of parental rights, and 13 (56.5%) require only clear and convincing evidence to terminate parental rights of rapists.
+
 
 ```{r law_str_2015}
 data %>%
@@ -332,9 +332,8 @@ data %>%
   labs(x = "Law Strength", y = "Number of States", title = "Law Strength",
        subtitle = "For States that Passed Legislation after 2015")
 ```
+**Analysis: Of the 23 states (nearly half) that passed legislation after 2015, 17 (73.9%) of them do not require a rape conviction for termination of parental rights, and 13 (56.5%) require only clear and convincing evidence to terminate parental rights of rapists.**
 
-
-* There are only 15 states that use “clear and convincing evidence” as a burden of proof for terminating parental rights of rapists, and 13 of those states (86.6%) passed legislation AFTER 2015.
 
 ```{r law_str5_2015}
 data %>%
@@ -350,7 +349,7 @@ data %>%
        subtitle = "For States with Law Strength of 5")
 ```
 
-* 6 (40%) “blue” (majority democratic legislators in the state legislature), 2 (13.3%) “purple” (split between democratic and republican legislators in the state legislature) and 7 (46.6%) “red” (majority republican legislators in the state legislature) states use the clear and convincing standard. There seems to be no significant variation along party lines with regard to a higher burden of proof.
+
 
 ```{r clr_convinc_party}
 data %>%
@@ -379,6 +378,8 @@ data %>%
         plot.title = element_text(face = "bold")) +
   scale_fill_manual(values = c("blue", "purple", "red", "gray"))
 ```
+
+**Analysis: 6 (40%) “blue” (majority democratic legislators in the state legislature), 2 (13.3%) “purple” (split between democratic and republican legislators in the state legislature) and 7 (46.6%) “red” (majority republican legislators in the state legislature) states use the clear and convincing standard. There seems to be no significant variation along party lines with regard to a higher burden of proof.**
 
 ```{r rape_conv_party}
 data %>%
@@ -484,7 +485,7 @@ data %>%
 ```
 
 
-* This shows the distribution of years of when the legislation was passed
+
 ```{r}
 data %>%
   ggplot(aes(x = year_passage)) +
@@ -495,7 +496,8 @@ data %>%
        title = "Distribution of Years in which States passed Legislation")
 ```
 
-* This shows when each state passed the legislation, going from earliest to latest
+**Analysis: This vizualisation shows us that the overwhelming majority of states passed legislation after 2010. This dramatic accelerated response perhaps indicates the presence of one or multiple "focusing events." Aptly named, focusing events refer to nationwide, regional, or local stories or movements that spur action on previously dormant issues. In our case, several CNN stories over the 10 year span (2012, 2015, 2017) may have reached interest groups, legislators, and/or constituents who were eager to move this legislation up on the agenda, or at least to amend it to be stronger. Additionally, on April 24, 2015, the US Senate voted to push states to restrict the rights of rapists to claim custody over the children conceived as a result of the rape. The Rape Survivor Child Custody Act, originally introduced by Sens. Sherrod Brown (D-OH) and Kelly Ayotte (R-NH), provided an incentive for states in the form of grant money to pass termination of parental rights legislation. The Act passed as an amendment to the Justice for Victims of Trafficking Act of 2015, a comprehensive human trafficking bill sponsored by Sen. John Cornyn (R-TX). Though correlation does not necessarily imply causation here, we can see how either of these nationwide focusing events could have provided the necessary push for states without legislation previously.**
+
 
 ```{r}
 data %>%
@@ -518,6 +520,31 @@ data %>%
 knitr::include_graphics("files/year_passage.gif")
 ```
 
+**Analysis: Here, we can more closely see the proportion of states that passed legislation each year after 2010. As indicated with our theory of focusing events in the previous analysis, the years with the largest amount of legislature mobilization are those in or following 2015. 2013 also stands out as a year in which many states moved to pass or amend the legislation, which again, could point to the CNN's story's impact. It is interesting to note, as we saw in a previous visualization, that of the majority of states who have passed legislation in the last decade, many have opted for clear and convincing evidence as the standard, while prior to 2010, only one state (Connecticutt) passed legislation with the lowest burden of proof in criminal court. With percentages, we can see this idea even more clearly: There are only 15 states that use “clear and convincing evidence” as a burden of proof for terminating parental rights of rapists, and 13 of those states (86.6%) passed legislation AFTER 2015.**
+
+prop of abortion clincs vs law str (not raw#)
+```{r}
+data %>% 
+
+  ggplot(aes(x = prop_abortion, group = law_strength)) +
+  geom_density(aes(fill = law_strength), alpha = 0.7)  +
+  theme_minimal() +
+  scale_fill_viridis_c() 
+```
+
+**Analysis: Based on what  **
+
 # References
 
 https://catalog.data.gov/dataset/tiger-line-shapefile-2017-nation-u-s-current-state-and-equivalent-national
+https://www.worldatlas.com/articles/us-states-by-population.html
+https://state.1keydata.com/state-population-density.php
+https://www.refinery29.com/en-us/2019/01/217375/abortion-clinics-laws-map
+https://lozierinstitute.org/health-clinics-nationwide-compared-to-planned-parenthood-centers/
+https://www.patriotsoftware.com/payroll/training/blog/states-with-paid-family-leave/
+http://www.ncsl.org/research/labor-and-employment/paid-family-leave-in-the-states.aspx
+https://www.aauw.org/resource/gender-pay-gap-by-state-and-congressional-district/
+https://www.vocativ.com/215942/these-13-states-still-make-exceptions-for-marital-rape/index.html
+https://www.prochoiceamerica.org/state
+https://www.cawp.rutgers.edu/state_fact_sheets/al
+https://www.congress.gov/bill/114th-congress/house-bill/1257
