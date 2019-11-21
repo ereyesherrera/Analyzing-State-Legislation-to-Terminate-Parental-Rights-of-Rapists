@@ -284,7 +284,7 @@ pal <- colorFactor("viridis",
 # Map
 leaflet(shp) %>%
   addTiles() %>%
-  setView(lng = -98.268082, lat = 41.125370, zoom = 2.47) %>%
+  setView(lng = -98.268082, lat = 41.125370, zoom = 3) %>%
   addPolygons(popup = state_popup, fillColor = ~pal(factor(data$law_strength)),
               stroke = 0.2, color = ~pal(factor(data$law_strength)), fillOpacity = 0.7, 
               smoothFactor = 0.5, 
