@@ -493,6 +493,9 @@ data %>%
        title = "Distribution of Years in which States passed Legislation")
 ```
 
+**Analysis: This vizualisation shows us that the overwhelming majority of states passed legislation after 2010. This dramatic accelerated response perhaps indicates the presence of one or multiple "focusing events." Aptly named, focusing events refer to nationwide, regional, or local stories or movements that spur action on previously dormant issues. In our case, several CNN stories over the 10 year span (2012, 2015, 2017) may have reached interest groups, legislators, and/or constituents who were eager to move this legislation up on the agenda, or at least to amend it to be stronger. Additionally, on April 24, 2015, the US Senate voted to push states to restrict the rights of rapists to claim custody over the children conceived as a result of the rape. The Rape Survivor Child Custody Act, originally introduced by Sens. Sherrod Brown (D-OH) and Kelly Ayotte (R-NH), provided an incentive for states in the form of grant money to pass termination of parental rights legislation. The Act passed as an amendment to the Justice for Victims of Trafficking Act of 2015, a comprehensive human trafficking bill sponsored by Sen. John Cornyn (R-TX). Though correlation does not necessarily imply causation here, we can see how either of these nationwide focusing events could have provided the necessary push for states without legislation previously.**
+
+
 * This shows when each state passed the legislation, going from earliest to latest
 
 ```{r}
