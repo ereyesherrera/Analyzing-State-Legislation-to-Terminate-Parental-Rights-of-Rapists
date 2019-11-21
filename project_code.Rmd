@@ -523,3 +523,14 @@ knitr::include_graphics("files/year_passage.gif")
 # References
 
 https://catalog.data.gov/dataset/tiger-line-shapefile-2017-nation-u-s-current-state-and-equivalent-national
+https://www.worldatlas.com/articles/us-states-by-population.html
+https://state.1keydata.com/state-population-density.php
+https://www.refinery29.com/en-us/2019/01/217375/abortion-clinics-laws-map
+https://lozierinstitute.org/health-clinics-nationwide-compared-to-planned-parenthood-centers/
+https://www.patriotsoftware.com/payroll/training/blog/states-with-paid-family-leave/
+http://www.ncsl.org/research/labor-and-employment/paid-family-leave-in-the-states.aspx
+https://www.aauw.org/resource/gender-pay-gap-by-state-and-congressional-district/
+https://www.vocativ.com/215942/these-13-states-still-make-exceptions-for-marital-rape/index.html
+https://www.prochoiceamerica.org/state
+https://www.cawp.rutgers.edu/state_fact_sheets/al
+https://www.congress.gov/bill/114th-congress/house-bill/1257
