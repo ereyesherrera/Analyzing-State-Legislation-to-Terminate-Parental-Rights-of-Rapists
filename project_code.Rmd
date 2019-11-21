@@ -30,7 +30,7 @@ library(htmltools)
 ```
 
 ```{r setup, echo=FALSE}
-knitr::opts_chunk$set(results = "hold", fig.show = "hold", fig.align = "center", dpi = 200)
+knitr::opts_chunk$set(results = "hold", fig.show = "hold", fig.align = "center")
 ```
 
 

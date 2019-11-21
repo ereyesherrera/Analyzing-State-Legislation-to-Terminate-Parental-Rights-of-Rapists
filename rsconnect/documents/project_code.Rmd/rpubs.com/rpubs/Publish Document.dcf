@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/552068/704e3082c7644f89851d3f098c45e8cb
+bundleId: https://api.rpubs.com/api/v1/document/552068/704e3082c7644f89851d3f098c45e8cb
+url: http://rpubs.com/ereyesherrera/552068
+when: 1574294494.62503
