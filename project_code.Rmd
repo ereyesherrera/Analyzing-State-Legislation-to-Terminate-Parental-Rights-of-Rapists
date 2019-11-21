@@ -522,12 +522,12 @@ prop of abortion clincs vs law str (not raw#)
 data %>% 
 
   ggplot(aes(x = prop_abortion, group = law_strength)) +
-  geom_density(aes(fill = law_strength), alpha = 0.7)  +
+  geom_density(aes(fill = factor(law_strength)), alpha = 0.7)  +
   theme_minimal() +
-  scale_fill_viridis_c() 
+  scale_fill_viridis_d() 
 ```
 
-**Analysis: Based on what  **
+**Analysis: This plot shows that states with the strongest legislation (lowest burden of proof) have, for the most part, the most favorable proportion of population to abortion clinics than  **
 
 # References
 
