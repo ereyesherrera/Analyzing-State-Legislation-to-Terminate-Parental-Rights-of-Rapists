@@ -518,6 +518,16 @@ knitr::include_graphics("files/year_passage.gif")
 
 **Analysis: Here, we can more closely see the proportion of states that passed legislation each year after 2010. As indicated with our theory of focusing events in the previous analysis, the years with the largest amount of legislature mobilization are those in or following 2015. 2013 also stands out as a year in which many states moved to pass or amend the legislation, which again, could point to the CNN's story's impact. It is interesting to note, as we saw in a previous visualization, that of the majority of states who have passed legislation in the last decade, many have opted for clear and convincing evidence as the standard, while prior to 2010, only one state (Connecticutt) passed legislation with the lowest burden of proof in criminal court.**
 
+Looking at abortion clinics vs law strength (prop of clinic, not raw #)
+```{r abortion_vs_law_str}
+data %>% 
+
+  ggplot(aes(x = prop_abortion, group = law_strength)) +
+  geom_density(aes(fill = law_strength, alpha = 0.2)) +
+  theme_minimal() +
+  scale_fill_viridis_c() 
+```
+
 
 
 # References
