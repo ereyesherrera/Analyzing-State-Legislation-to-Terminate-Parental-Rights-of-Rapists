@@ -445,14 +445,15 @@ data %>%
 **Analysis: 24 states currently require a rape conviction for TPR. Of those states, 6 (25%) were “blue”, 12 (50%) were “red”, and 5 (20.83%) were “purple” at the time of passage. 15 states currently use the clear and convincing standard, 6 (40%) are "blue", 2 (13.3%) are "purple", and 7 (46.7%) are "red." From this vizualization, we can glean several things. Firstly, there seems to be no disernible difference for democratic leaning states in terms of whether they pass this legislation requiring a rape conviction or clear and convincing evidence, whereas among republican or "red" states, there is a much higher tendency to pass legislation requiring a rape conviction than clear and convincing evidence as a standard. Secondly, across the board, the majority of states passing legislation are republican favored. Thirdly, the ratio of partisan states requiring a rape conviction (6:12) is much more pronounced than the ratio of partisan states requiring clear and convincing evidence (6:7).**
 
 This plot is a combination of the previous 3. It shows the # of states for each law strength, broken up by party.
+
 ```{r}
 data %>% 
   group_by(law_strength, party) %>% 
   count() %>% 
- 
+  replace_na(list(party = "N/A")) %>%
   ggplot(aes(x = law_strength, y = n)) +
   geom_col(aes(fill = party), position = position_dodge()) +
-  scale_fill_manual(values = c("blue", "purple", "red", "grey")) + #why does this get rid of NA? Should be an NA in strength 1 and strength 2. 
+  scale_fill_manual(values = c("blue", "gray", "purple", "red")) + #why does this get rid of NA? Should be an NA in strength 1 and strength 2. 
   theme_minimal() +
   labs(x = "Strength of Law", y = "Number of States", title = "Law Strength by Number of States and Party", fill = "Party")
 ```
