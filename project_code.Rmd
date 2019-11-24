@@ -309,8 +309,8 @@ data %>%
   pivot_wider(names_from = State, values_from = Values)
 ```
 
+**Analysis: It is interesting to note in this table that though these states vary significantly in terms of favorability to women, ideology, and party in power, they all have legislation that requires a rape conviction. These results as outlined above could perhaps indicate the presence of a predictor variable we cannot account for--the presence or absence of a focusing event.**
 
-**Analysis: Of the 23 states (nearly half) that passed legislation after 2015, 17 (73.9%) of them do not require a rape conviction for termination of parental rights, and 13 (56.5%) require only clear and convincing evidence to terminate parental rights of rapists.**
 
 ```{r law_str_2015}
 data %>%
@@ -331,7 +331,7 @@ data %>%
   labs(x = "Law Strength", y = "Number of States", title = "Law Strength",
        subtitle = "For States that Passed Legislation after 2015")
 ```
-
+**Analysis: Of the 23 states (nearly half) that passed legislation after 2015, 17 (73.9%) of them do not require a rape conviction for termination of parental rights, and 13 (56.5%) require only clear and convincing evidence to terminate parental rights of rapists.**
 
 ```{r law_str5_2015}
 data %>%
@@ -347,7 +347,7 @@ data %>%
        subtitle = "For States with Law Strength of 5")
 ```
 
-
+**Analysis: This vizualisation clearly lays out that the addition of clear and convincing evidence for this legislation is fairly recent, with a couple of notable outliers.**
 
 ```{r clr_convinc_party}
 data %>%
@@ -407,7 +407,7 @@ data %>%
   scale_fill_manual(values = c("blue", "purple", "red", "gray"))
 ```
 
-
+**Analysis: From this vizualisation, we may be inclined to infer that republican states by and large were the ones passing legislation requiring a rape conviction. However, this analysis would be selective, given we are missing some critical information here. In later vizualisations, we'll see how, although republican states do favor a conviction requirement, they have also passed more legislation for this issue across the board.**
 
 ```{r}
 data %>%
@@ -457,7 +457,7 @@ data %>%
 ```
 
 
-* 16 states who passed legislation to terminate the parental rights of rapists had Democratically controlled legislatures at the time of passage, 7 were split, and 25 were republican-controlled. The NA shows information on Nebraska, which has a Bipartisan legislature and this does not apply in this analysis. Minnesota is not included because they do not have anything in place.
+**Analysis: 16 states who passed legislation to terminate the parental rights of rapists had Democratically controlled legislatures at the time of passage, 7 were split, and 25 were republican-controlled. The NA shows information on Nebraska, which has a Bipartisan legislature and is therefore not applicable in this analysis. Minnesota is excluded as well because the state currently has nothing in place.**
 
 ```{r}
 data %>%
