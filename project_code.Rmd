@@ -166,7 +166,7 @@ data %>%
 
 Comparing the two maps above, we find some surprising results. For example, the group of West Coast and some East Coast states that were coded as being in Cluster 2 - the best cluster - only have a strength of 2 for the legislation they have in place. Based on the clustering performed above, we would expect these states to have a strong legislation since they seem to be most progressive and have the most representation for women liberal ideals. Conversely, we see that states such as Florida, Mississippi and Georgia who were placed in Cluster 1 or Cluster 2 - the worse clusters - have much better law strengths. 
 
-There are many possible explanations for this effect. One of them may be that those states in which have lower "equality" for women may need to have stronger laws in place to protect them because of their "make-up" in terms of treatment towards women. (NEED EMMA FOR THIS PART)
+There are many possible explanations for this effect. One of them may be that those states in which have lower "equality" for women may need to have stronger laws in place to protect them because of their need to "make-up" for their treatment towards women. (NEED EMMA FOR THIS PART)
 
 
 Bringing it all together and now accounting for the year in which the legislation in question was passed and the strength of the law, we re-run our clustering algorithm to see how states are similar to each other in a more hollistic view, accounting for both what we expected their attitudes towards this legislation to be and the reality for the legislation in these states. Again, we determined their to be 3 "natural" clusters and visualized these groups on the map once again.
@@ -229,7 +229,7 @@ The breakdown in groups is very similar to the original clustering analysis, but
 
 # Other visualizations/wrangling we will organize
 
-The following updates our original data and adds a new column to designate if a state was red or blue at the time
+The following updates our original data and adds a new column to designate if a state was red or blue at the time.
 
 ```{r}
 data <- data %>%
@@ -310,8 +310,7 @@ data %>%
 ```
 
 
-
-
+**Analysis: Of the 23 states (nearly half) that passed legislation after 2015, 17 (73.9%) of them do not require a rape conviction for termination of parental rights, and 13 (56.5%) require only clear and convincing evidence to terminate parental rights of rapists.**
 
 ```{r law_str_2015}
 data %>%
@@ -332,7 +331,6 @@ data %>%
   labs(x = "Law Strength", y = "Number of States", title = "Law Strength",
        subtitle = "For States that Passed Legislation after 2015")
 ```
-**Analysis: Of the 23 states (nearly half) that passed legislation after 2015, 17 (73.9%) of them do not require a rape conviction for termination of parental rights, and 13 (56.5%) require only clear and convincing evidence to terminate parental rights of rapists.**
 
 
 ```{r law_str5_2015}
