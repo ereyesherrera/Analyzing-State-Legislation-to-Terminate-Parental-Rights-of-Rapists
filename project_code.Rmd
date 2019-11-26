@@ -331,6 +331,7 @@ data %>%
   labs(x = "Law Strength", y = "Number of States", title = "Law Strength",
        subtitle = "For States that Passed Legislation after 2015")
 ```
+
 **Analysis: Of the 23 states (nearly half) that passed legislation after 2015, 17 (73.9%) of them do not require a rape conviction for termination of parental rights, and 13 (56.5%) require only clear and convincing evidence to terminate parental rights of rapists.**
 
 ```{r law_str5_2015}
