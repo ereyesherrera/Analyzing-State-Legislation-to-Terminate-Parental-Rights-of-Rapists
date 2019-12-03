@@ -537,7 +537,7 @@ data %>%
   scale_fill_viridis_d() 
 ```
 
-**Analysis: This plot shows that states with the strongest legislation (lowest burden of proof) have, for the most part, the most favorable proportion of population to abortion clinics than  **
+**Analysis: This plot shows that states with the strongest legislation (lowest burden of proof) have, for the most part, the most favorable proportion of population to abortion clinics. Similarly, the states with the weakest legislation (highest burden of proof, requiring a rape conviction) have the worst proportion of population to abortion clinics. These results point to an interesting hypocricy in ideological incentivizing across states. We might expect that states with very few abortion clinics (an indication of a very pro-life ideological base) would have greater law strength to incentivize women to have their babies, or to make sure that women who had already borne children instead of aborting were protected against having to coparent with their assailants. On the converse side of the equation, states with more abortion clinics per person have greater law strength, which indicates a higher favorabiity to women regarding pro-choice. Whether women who have rape induced pregnancies keep or abort their babies, they have options. Interestingly, when we turn to the health clinic vizualisation, we see that these sharp divides are largely nonexistent. Regardless of law strength, states seem to have pretty decent proportions of women's health clinics per population, an indication of non-controversy.**
 
 # References
 
