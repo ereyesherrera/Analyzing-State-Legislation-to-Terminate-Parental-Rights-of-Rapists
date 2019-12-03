@@ -10,7 +10,7 @@ output:
     code_folding: hide
 ---
 
-```{r libraries, warning=FALSE, message=FALSE}
+```{r libraries, warning=FALSE, message=FALSE, echo=FALSE}
 library(gganimate)
 library(ggmap)
 library(ggridges)
@@ -77,7 +77,7 @@ data
 
 # Preliminary Analysis: Clustering
 
-To begin answering our research question, we first were interested in understanding how states are similar in their state legislatures and other variables that may account for how they enact the legislation we are interested in looking at. As such, we use hierarchical clustering analysis to find structure in our data and determine states that are similar with regards to the features outlined above. Our research question focuses on understanding factors that may influence how this legislation is enforced; as a result, we do not factor in the actual strength of the law we coded above or the year in which it was passed. This is because we are interested in seeing if the variables in this data set have a relationship with what the strength of the legislation actually is.
+To begin answering our research question, we first were interested in understanding how states are similar in their state legislatures and other variables that may account for how they enact the legislation we are interested in looking at. As such, we use hierarchical clustering analysis to find structure in our data and determine states that are similar with regards to the features outlined above. Our research question focuses on understanding factors that may influence the timing and strength of the legislation; as a result, we do not factor in the actual strength of the law we coded above or the year in which it was passed. This is because we are interested in seeing if the variables in this data set have a relationship with what the strength of the legislation actually is.
 
 For this analysis, we have to convert the variables that are factors into numeric data. As such, this is how the variables were coded:
 
@@ -85,7 +85,7 @@ For this analysis, we have to convert the variables that are factors into numeri
 
 * `paid_fam_leave` & `marital_rape_except` variables: 1 = "No", 2 = "Yes"
 
-Additionally, it is also important to note why we also excluded the variables that indicate population of the state, number of legal abortion clinics available to women in the state and the number of women's health clinics in the state. We did not want to size of the state to affect the results of the clustering analysis. So to account for this, we left the variables of `prop_abortion` and `prop_health` in the algorithm because this places all states on the same scale by computing the ratio of people per abortion clinic and people to health clinics, respectively. These are the most important variables since we are trying to find similarities in resources available, and not simply the size of the state, for example.
+Additionally, it is also important to note why we also excluded the variables that indicate population of the state, number of legal abortion clinics available to women in the state and the number of women's health clinics in the state. We did not want to size of the state to affect the results of the clustering analysis. So to account for this, we included the variables of `prop_abortion` and `prop_health` in the algorithm because this places all states on the same scale by computing the ratio of people per abortion clinic and people to health clinics, respectively. These are the most important variables since we are trying to find similarities in resources available, and not simply the size of the state, for example.
 
 Coding the variables above as such will allow us to see the break down of these variables when summarizing variable means across clusters once clusters have been determined. We used the complete linkage approach to find similarities between clusters of states, which is defined as the maximum distance between any 2 cases between any 2 clusters. After running the hierarchical clustering algorithm and visualizing the resultant dendrogram (i.e. when clusters merge and which states merge into what clusters), we determined that the appropriate number of natural clusters was 4 and better visualized these four clusters on a states map, as seen below.
 
@@ -441,7 +441,7 @@ data %>%
   scale_fill_brewer(palette = 7)
 ```
 
-**Analysis: 24 states currently require a rape conviction for TPR. Of those states, 6 (25%) were “blue”, 12 (50%) were “red”, and 5 (20.83%) were “purple” at the time of passage. 15 states currently use the clear and convincing standard, 6 (40%) are "blue", 2 (13.3%) are "purple", and 7 (46.7%) are "red." From this vizualization, we can glean several things. Firstly, there seems to be no disernible difference for democratic leaning states in terms of whether they pass this legislation requiring a rape conviction or clear and convincing evidence, whereas among republican or "red" states, there is a much higher tendency to pass legislation requiring a rape conviction than clear and convincing evidence as a standard. Secondly, across the board, the majority of states passing legislation are republican favored. Thirdly, the ratio of partisan states requiring a rape conviction (6:12) is much more pronounced than the ratio of partisan states requiring clear and convincing evidence (6:7).**
+**Analysis: 24 states currently require a rape conviction for terminating parental rights. Of those states, 6 (25%) were “blue”, 12 (50%) were “red”, and 5 (20.83%) were “purple” at the time of passage. 15 states currently use the clear and convincing standard, 6 (40%) are "blue", 2 (13.3%) are "purple", and 7 (46.7%) are "red." From this vizualization, we can glean several things. Firstly, there seems to be no disernible difference for democratic leaning states in terms of whether they pass this legislation requiring a rape conviction or clear and convincing evidence, whereas among republican or "red" states, there is a much higher tendency to pass legislation requiring a rape conviction than clear and convincing evidence as a standard. Secondly, across the board, the majority of states passing legislation are republican favored. Thirdly, the ratio of partisan states requiring a rape conviction (6:12) is much more pronounced than the ratio of partisan states requiring clear and convincing evidence (6:7).**
 
 This plot is a combination of the previous 3. It shows the # of states for each law strength, broken up by party.
 
@@ -456,7 +456,6 @@ data %>%
   theme_minimal() +
   labs(x = "Strength of Law", y = "Number of States", title = "Law Strength by Number of States and Party", fill = "Party")
 ```
-
 
 **Analysis: 16 states who passed legislation to terminate the parental rights of rapists had Democratically controlled legislatures at the time of passage, 7 were split, and 25 were republican-controlled. The NA shows information on Nebraska, which has a Bipartisan legislature and is therefore not applicable in this analysis. Minnesota is excluded as well because the state currently has nothing in place.**
 
@@ -524,12 +523,23 @@ knitr::include_graphics("files/year_passage.gif")
 
 prop of abortion clincs vs law str (not raw#)
 ```{r}
-data %>% 
-
+g1 <- data %>% 
   ggplot(aes(x = prop_abortion, group = law_strength)) +
-  geom_density(aes(fill = factor(law_strength)), alpha = 0.7)  +
+  geom_density(aes(fill = factor(law_strength)), alpha = 0.5)  +
   theme_minimal() +
-  scale_fill_viridis_d() 
+  scale_fill_viridis_d() +
+  labs(x = "Proportion of Abortion Clinics", y = "Density", fill = "Law Strength", 
+       title = "Distribution of Proportion ofAbortion Clinics for Law Strengths")
+
+g2 <- data %>% 
+  ggplot(aes(x = prop_health, group = law_strength)) +
+  geom_density(aes(fill = factor(law_strength)), alpha = 0.5)  +
+  theme_minimal() +
+  scale_fill_viridis_d() +
+  labs(x = "Proportion of Health Clinics", y = "Density", fill = "Law Strength", 
+       title = "Distribution of Proportion of Health Clinics for Law Strengths")
+
+grid.arrange(g1, g2)
 ```
 
 **Analysis: This plot shows that states with the strongest legislation (lowest burden of proof) have, for the most part, the most favorable proportion of population to abortion clinics than  **
