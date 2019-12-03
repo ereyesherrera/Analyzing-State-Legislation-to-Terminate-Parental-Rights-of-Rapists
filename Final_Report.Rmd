@@ -263,7 +263,7 @@ data %>%
   scale_color_viridis_d() 
 ```
 
-#Specific Variables
+# Specific Variables
 
 ```{r}
 data %>% 
