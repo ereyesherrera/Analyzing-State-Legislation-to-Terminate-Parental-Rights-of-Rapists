@@ -1,0 +1,274 @@
+---
+title: "Final Report"
+author: 
+- "Emma Higgins, Max Danielewicz, Will Hamlin, Edwin Reyes Herrera"
+- "STATS 112 Final Project"
+output: 
+  html_document:
+    keep_md: true
+    df_print: paged
+    code_folding: hide
+---
+
+```{r libraries, warning=FALSE, message=FALSE}
+library(gganimate)
+library(ggmap)
+library(ggridges)
+library(ggthemes)
+library(knitr)
+library(leaflet)
+library(lubridate)
+library(plotly)
+library(scales)
+library(tidyverse)
+library(tibble)
+library(skimr)
+library(naniar)
+library(gridExtra)
+library(sf)
+library(htmltools)
+```
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(results = "hold", fig.show = "hold", fig.align = "center", warning = FALSE, message = FALSE, dpi = 200)
+```
+
+# Introduction
+
+Currently, every state but Minnesota has legislation to terminate the parental rights of rapists. However, legislation varies considerably from state to state with respect to timing and scope. While some states passed legislation in the 90s, many have waited until after 2015 to pass or amend their laws. Another key variant across states is the strength of the legislation, which we define on a five point scale (1= no legislation at all, 2= requiring a rape conviction for termination, 3= ambiguous burden of proof, 4= beyond a reasonable doubt, 5= clear and convincing evidence). Incongruities across the country beg the question: What accounts for these legislative differences? In this project, we consider how a state’s favorability to and representation of women, partisan divides, ideology, and policy-making context (“focusing events” and framing) influence legislation’s presence and scope. This data was compiled by Emma Higgins for her honors thesis using a litany of legislative and policy datasets. Her group members have kindly obliged her obsession and agreed to dedicate fifty hours to analyzing her niche dataset!
+
+## Codebook
+
+Variable                    Meaning
+--------------------------  --------
+`state`                     identifying variable/cases
+`pop`                       size of population
+`lgl_abortion_clinics`      Number of legal abortion clinics available to women in the state
+`health_clinics`            women's health clinics that do not provide abortion services
+`prop_abortion`             the ratio of people per abortion clinic in the state (bigger numbers mean presumably less access)
+`prop_health`               the ratio of people per women's health clinic in the state (bigger numbers mean presumably less access)
+`paid_fam_leave`            whether a state has a law requiring an employer to issue paid family leave (women are disproportionately affected by paid family leave or lack thereof because they're the ones having babies!)
+`prop_equal_pay`            how many cents women make to the dollar that men make in each state
+`equal_pay_rank`            how a state ranks nationally according to equal pay laws
+`marital_rape_except`       whether a state has loopholes in sexual assault in the cases of marriage
+`law strength`              metric to assign to the strength of the legislation: 5 = clear and convincing, 4 = beyond reasonable doubt, 3 = not specified, 2 = conviction, 1 = nothing				
+`year_passage`              when the bill (to terminate parental rights in cases of rape that resulted in child's conception) was initially passed
+`year_amend`                when/if the bill was amended to expand restrictions from requiring a rape conviction to clear and convincing evidence
+`post_2015`                 whether the bill was passed before or after 2015, when the Obama Administration issued grant money to any state that made this issue a legislative priority
+`bill_name`                 name of legaislation passed in the state
+`perc_women`                percent of women in both chambers combined at the times of the bill's passage 
+`perc_demo_senate`	        percent of members in the state senate that are of the Democratic party at the time of the bill's passage
+`perc_demo_house`	          percent of members in the state house that are of the Democratic party at the time of the bill's passage
+`Senate`	                  party that controlled state senate during the passage of the legislation; D = Democrat, R = Republican, P = Split, B = Bipartisan, N/A = Does not apply (legislation not passed)
+`House`	                    party that controlled state house during the passage of the legislation
+`Governor`                  governor's party affiliation
+
+# Conxetual Framing
+```{r data, warning=FALSE, message=FALSE}
+data <- read_csv("Honors_stats_updated_nov18_2.csv")
+data <- data %>%
+  select(-X22)
+```
+
+```{r interactive_map, warning=FALSE, message=FALSE, dpi = 150}
+# Loading shape file for all states 
+shp <- read_sf("files/tl_2017_us_state/tl_2017_us_state.shp")
+
+# Removing territories and arranging in alphabetical order
+shp <- shp %>%
+  filter(!NAME %in% c("Puerto Rico", "Guam", "Commonwealth of the Northern Mariana Islands", "United States Virgin Islands", "American Samoa", "District of Columbia")) %>%
+  arrange(NAME)
+
+# Creating info that will pop up when clicked on state
+state_popup <- paste0("<strong>State: </strong>", data$State,
+                     "<br><strong>Pop:</strong> ", data$Pop,
+                     "<br><strong>Prop. Abortion Clinics: </strong> ", data$prop_health,
+                     "<br><strong>Prop. Health Clinics: </strong>", data$prop_abortion,
+                     "<br><strong>Family Leave: </strong>", data$paid_fam_leave,
+                     "<br><strong>Prop. Equal Pay: </strong>", data$prop_equal_pay,
+                     "<br><strong>Equal Pay Rank: </strong>", data$equal_pay_rank,
+                     "<br><strong>Marital Exception: </strong>", data$marital_rape_except,
+                     "<br><strong>Year Law Passed: </strong>", data$year_passage,
+                     "<br><strong>Year Amended: </strong>",  data$year_amend,
+                     "<br><strong>Controlling Party During Passage: </strong>", data$party)
+
+# Creating Palette for Law Strength for each state
+pal <- colorFactor("viridis", 
+                     domain = factor(data$law_strength))
+# Map
+leaflet(shp) %>%
+  addTiles() %>%
+  setView(lng = -98.268082, lat = 41.125370, zoom = 3) %>%
+  addPolygons(popup = state_popup, fillColor = ~pal(factor(data$law_strength)),
+              stroke = 0.2, color = ~pal(factor(data$law_strength)), fillOpacity = 0.7, 
+              smoothFactor = 0.5, 
+              highlight = highlightOptions(weight = 5, 
+                                 color = "black",
+                                 fillOpacity = 0.9,
+                                 bringToFront = FALSE)) %>%
+  addLegend(pal = pal, 
+            values = ~factor(data$law_strength), 
+            opacity = 0.5, 
+            title = "Law Strength",
+            position = "bottomright")
+```
+
+```{r initial_clusters, echo = FALSE}
+# Intitial clustering w/o taking into account year passage
+my_cluster_data <- data %>% 
+  select(-c(bill_name, year_amend, post_2015, law_strength, year_passage, Pop, lgl_abortion_clinics, health_clinics))  %>%
+  mutate(Senate = as.numeric(factor(Senate)),
+         House = as.numeric(factor(House)),
+         Governor = as.numeric(factor(Governor)),
+         paid_fam_leave = as.numeric(factor(paid_fam_leave)),
+         marital_rape_except = as.numeric(factor(marital_rape_except))) %>%
+  column_to_rownames("State")
+
+# Hierarchical clustering
+# method can be "complete", "single", "average", "centroid"
+hier_model <- hclust(dist(scale(my_cluster_data)), method = "complete")
+
+# Visualization: dendrogram
+plot(hier_model, cex = 0.8, xlab = "", main = "Dendrogram Not Accounting for Law Strength", 
+     sub = "Method: Complete Linkage")
+
+# Assign each sample case to a cluster
+# You specify the number of clusters, k
+clusters <- as.factor(cutree(hier_model, k = 3))
+
+# Hierarchical Analysis using all information
+my_cluster_data2 <- data %>% 
+  select(-c(bill_name, year_amend, Pop, lgl_abortion_clinics, health_clinics))  %>%
+  mutate(Senate = as.numeric(factor(Senate)),
+         House = as.numeric(factor(House)),
+         Governor = as.numeric(factor(Governor)),
+         post_2015 = as.numeric(factor(post_2015)),
+         paid_fam_leave = as.numeric(factor(paid_fam_leave)),
+         marital_rape_except = as.numeric(factor(marital_rape_except))) %>%
+  column_to_rownames("State")
+
+# Hierarchical clustering
+# method can be "complete", "single", "average", "centroid"
+hier_model2 <- hclust(dist(scale(my_cluster_data2)), method = "complete")
+
+# Visualization: dendrogram
+plot(hier_model2, cex = 0.8, xlab = "", main = " Dendrogram Accounting for Law Strength", 
+     sub = "Method: Complete Linkage")
+
+# Assign each sample case to a cluster
+# You specify the number of clusters, k
+clusters2 <- as.factor(cutree(hier_model2, k = 3))
+```
+
+```{r clustering 1&2}
+# Mapping initial clustering results
+states_map <- map_data("state")
+
+data %>% 
+  mutate(cluster = clusters,
+         State = tolower(State)) %>%
+  ggplot(aes(fill = cluster)) +
+  geom_map(aes(map_id = State), color = "black", size = 0.1, alpha = 0.8, map = states_map) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
+  scale_fill_viridis_d() +
+  labs(fill = "Cluster", title = "How Each State Clusters Together, Part 1", 
+       subtitle = "Results from Hierarchical Analysis before accounting for law strength",
+       caption = "Note: Alaska is in Cluster 1, Hawaii is in Cluster 2") + 
+  theme(plot.title = element_text(face = "bold", size = 12),
+        plot.caption = element_text(face = "italic", hjust = 0.5, size = 10))
+
+
+# Mapping Clusters when accounting for law strength and year passage
+data %>% 
+  mutate(cluster = clusters2,
+         State = tolower(State)) %>%
+  ggplot(aes(fill = cluster)) +
+  geom_map(aes(map_id = State), color = "black", size = 0.1, alpha = 0.8, map = states_map) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
+  scale_fill_viridis_d() +
+  labs(fill = "Cluster", title = "How Each State Clusters Together, Part 2", 
+       subtitle = "Accounting for Law Strength in Hierarchical Analysis",
+       caption = "Note: Alaska is in Cluster 1, Hawaii is in Cluster 3") + 
+  theme(plot.title = element_text(face = "bold", size = 12),
+        plot.caption = element_text(face = "italic", hjust = 0.5, size = 10))
+```
+
+```{r law str by party}
+data <- data %>%
+  mutate(party = case_when(perc_demo_senate < 50 & perc_demo_house < 50 ~ "Red",
+                           perc_demo_senate > 50 & perc_demo_house > 50 ~ "Blue",
+                           perc_demo_senate == 50 & perc_demo_house == 50 ~ "Purple",
+                           perc_demo_senate <= 50 & perc_demo_house >= 50 ~ "Purple",
+                           perc_demo_senate >= 50 & perc_demo_house <= 50 ~ "Purple")) 
+
+data %>% 
+  group_by(law_strength, party) %>% 
+  count() %>% 
+  replace_na(list(party = "N/A")) %>%
+  ggplot(aes(x = law_strength, y = n)) +
+  geom_col(aes(fill = party), position = position_dodge()) +
+  scale_fill_manual(values = c("blue", "gray", "purple", "red")) + #why does this get rid of NA? Should be an NA in strength 1 and strength 2. 
+  theme_minimal() +
+  labs(x = "Strength of Law", y = "Number of States", title = "Law Strength by Number of States and Party", fill = "Party")
+```
+
+**Analysis: 16 states who passed legislation to terminate the parental rights of rapists had Democratically controlled legislatures at the time of passage, 7 were split, and 25 were republican-controlled. The NA shows information on Nebraska, which has a Bipartisan legislature and is therefore not applicable in this analysis. Minnesota is excluded as well because the state currently has nothing in place.**
+
+# Change Over Time
+
+```{r}
+data %>%
+  ggplot(aes(x = year_passage)) +
+  geom_density() +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold")) +
+  labs(x = "Year Legislation Passed", y = "Density", 
+       title = "Distribution of Years in which States passed Legislation")
+```
+
+**Analysis: This vizualisation shows us that the overwhelming majority of states passed legislation after 2010. This dramatic accelerated response perhaps indicates the presence of one or multiple "focusing events." Aptly named, focusing events refer to nationwide, regional, or local stories or movements that spur action on previously dormant issues. In our case, several CNN stories over the 10 year span (2012, 2015, 2017) may have reached interest groups, legislators, and/or constituents who were eager to move this legislation up on the agenda, or at least to amend it to be stronger. Additionally, on April 24, 2015, the US Senate voted to push states to restrict the rights of rapists to claim custody over the children conceived as a result of the rape. The Rape Survivor Child Custody Act, originally introduced by Sens. Sherrod Brown (D-OH) and Kelly Ayotte (R-NH), provided an incentive for states in the form of grant money to pass termination of parental rights legislation. The Act passed as an amendment to the Justice for Victims of Trafficking Act of 2015, a comprehensive human trafficking bill sponsored by Sen. John Cornyn (R-TX). Though correlation does not necessarily imply causation here, we can see how either of these nationwide focusing events could have provided the necessary push for states without legislation previously.**
+
+```{r law_str_2015}
+data %>%
+  filter(post_2015 == "Yes") %>%
+  ggplot(aes(x = factor(law_strength))) +
+  geom_bar(fill = "black") +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold")) +
+  labs(x = "Law Strength", y = "Number of States", title = "Law Strength",
+       subtitle = "For States that Passed Legislation after 2015")
+```
+**Analysis: This vizualisation clearly lays out that the addition of clear and convincing evidence for this legislation is fairly recent, with a couple of notable outliers.**
+
+```{r gif_law_passage, echo=FALSE, fig.align='center', dpi=600}
+knitr::include_graphics("files/year_passage.gif")
+
+data %>%
+  arrange(year_passage) %>%
+  ggplot(aes(y = State, x = year_passage, label = State, color = factor(law_strength))) +
+  geom_text(size = 2.5) +
+  theme_minimal() +
+  labs(x = "Year Legislation Passed", color = "Law Strength", 
+       title = "When Each State Passed Legislation", 
+       caption = "Note: Minnesota not included; only state that has not passed any legislation") +
+  theme(axis.text.y = element_blank(),
+        legend.position = "bottom",
+        plot.title = element_text(face = "bold"), 
+        plot.caption = element_text(face = "italic", hjust = 0.5)) +
+  scale_x_continuous(breaks = seq(1990, 2020, 2)) +
+  scale_color_viridis_d() 
+```
+
+# Specific Variables
+
+```{r}
+data %>% 
+
+  ggplot(aes(x = prop_abortion, group = law_strength)) +
+  geom_density(aes(fill = factor(law_strength)), alpha = 0.7)  +
+  theme_minimal() +
+  scale_fill_viridis_d() 
+```
+**Analysis: This plot shows that states with the strongest legislation (lowest burden of proof) have, for the most part, the most favorable proportion of population to abortion clinics than  **

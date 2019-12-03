@@ -36,9 +36,7 @@ knitr::opts_chunk$set(results = "hold", fig.show = "hold", fig.align = "center",
 
 # Introduction
 
-* Info on motivation for looking into this data set
-* explain where data came from
-* outline research question
+Currently, every state but Minnesota has legislation to terminate the parental rights of rapists. However, legislation varies considerably from state to state with respect to timing and scope. While some states passed legislation in the 90s, many have waited until after 2015 to pass or amend their laws. Another key variant across states is the strength of the legislation, which we define on a five point scale (1= no legislation at all, 2= requiring a rape conviction for termination, 3= ambiguous burden of proof, 4= beyond a reasonable doubt, 5= clear and convincing evidence). Incongruities across the country beg the question: What accounts for these legislative differences? In this project, we consider how a state’s favorability to and representation of women, partisan divides, ideology, and policy-making context (“focusing events” and framing) influence legislation’s presence and scope. This data was compiled by Emma Higgins for her honors thesis using a litany of legislative and policy datasets. Her group members have kindly obliged her obsession and agreed to dedicate fifty hours to analyzing her niche dataset!
 
 ## Codebook
 
