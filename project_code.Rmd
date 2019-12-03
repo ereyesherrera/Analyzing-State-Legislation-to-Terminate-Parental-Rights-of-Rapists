@@ -30,7 +30,7 @@ library(htmltools)
 ```
 
 ```{r setup, echo=FALSE}
-knitr::opts_chunk$set(results = "hold", fig.show = "hold", fig.align = "center", warning = FALSE, message = FALSE, dpi = 200)
+knitr::opts_chunk$set(results = "hold", fig.show = "hold", fig.align = "center", warning = FALSE, message = FALSE)
 ```
 
 
@@ -69,7 +69,8 @@ Variable                    Meaning
 ```{r, warning=FALSE, message=FALSE}
 data <- read_csv("Honors_stats_updated_nov18_2.csv")
 data <- data %>%
-  select(-X22)
+  select(-X22) %>%
+  mutate(post_2015 = fct_collapse(post_2015, Yes = c("Yes", "yes")))
 
 data
 ```
@@ -337,7 +338,7 @@ data %>%
        subtitle = "For States that Passed Legislation after 2015")
 ```
 
-**Analysis: Of the 23 states (nearly half) that passed legislation after 2015, 17 (73.9%) of them do not require a rape conviction for termination of parental rights, and 13 (56.5%) require only clear and convincing evidence to terminate parental rights of rapists.**
+**Analysis: Of the 24 states (nearly half) that passed legislation after 2015, 17 (73.9%) of them do not require a rape conviction for termination of parental rights, and 13 (56.5%) require only clear and convincing evidence to terminate parental rights of rapists.**
 
 ```{r law_str5_2015}
 data %>%
@@ -351,6 +352,16 @@ data %>%
   labs(x = "Did the State pass legislation after 2015?", y = "Number of States",
        title = "States that passed legislation after 2015", 
        subtitle = "For States with Law Strength of 5")
+
+data %>%
+  ggplot(aes(x = post_2015, group = law_strength)) +
+  geom_bar(aes(fill = factor(law_strength))) +
+  theme_minimal() +
+  scale_fill_viridis_d() + 
+  theme(plot.title = element_text(face = "bold")) +
+  labs(x = "Did the State Pass legislation after 2015?", y = "Number of States", 
+       fill = "Law Strength", title = "States and Their Law Strengths",
+       subtitle = "Passing Legislation before vs. after 2015")
 ```
 
 **Analysis: This vizualisation clearly lays out that the addition of clear and convincing evidence for this legislation is fairly recent, with a couple of notable outliers.**
@@ -548,6 +559,32 @@ grid.arrange(g1, g2)
 ```
 
 **Analysis: This plot shows that states with the strongest legislation (lowest burden of proof) have, for the most part, the most favorable proportion of population to abortion clinics. Similarly, the states with the weakest legislation (highest burden of proof, requiring a rape conviction) have the worst proportion of population to abortion clinics. These results point to an interesting hypocricy in ideological incentivizing across states. We might expect that states with very few abortion clinics (an indication of a very pro-life ideological base) would have greater law strength to incentivize women to have their babies, or to make sure that women who had already borne children instead of aborting were protected against having to coparent with their assailants. On the converse side of the equation, states with more abortion clinics per person have greater law strength, which indicates a higher favorabiity to women regarding pro-choice. Whether women who have rape induced pregnancies keep or abort their babies, they have options. Interestingly, when we turn to the health clinic vizualisation, we see that these sharp divides are largely nonexistent. Regardless of law strength, states seem to have pretty decent proportions of women's health clinics per population, an indication of non-controversy.**
+
+
+```{r}
+data %>%
+  ggplot(aes(x = marital_rape_except, group = law_strength)) +
+  geom_bar(aes(fill = factor(law_strength))) +
+  theme_minimal() +
+  scale_fill_viridis_d() + 
+  theme(plot.title = element_text(face = "bold")) +
+  labs(y = "Number of States", x = "Does the State Have Marital Rape Exception?", 
+       fill = "Law Strength", 
+       title = "Comparing States with and without Marital Rape Exception", 
+       subtitle = "By Law Strength")
+
+data %>%
+  ggplot(aes(x = paid_fam_leave, group = law_strength)) +
+  geom_bar(aes(fill = factor(law_strength))) +
+  theme_minimal() +
+  scale_fill_viridis_d() +
+  theme(plot.title = element_text(face = "bold")) +
+  labs(y = "Number of States", x = "Does the State Have Paid Family Leave?", 
+       fill = "Law Strength", 
+       title = "Comparing States With and Without Paid Family Leave", 
+       subtitle = "By Law Strength")
+
+```
 
 # References
 
