@@ -140,6 +140,11 @@ my_cluster_data %>%
 
 From this map, we are able to visualize the which states are similar in terms of their representation in the state legislatures and the resources available in each state that may affect how legislation is enforced. We can define the four clusters seen above as the following, based on the means for each variable within each cluster:
 
+**Analysis: From this clustering, we see that states on the west coast and in the northeast, and states in the southeast and midwesttend to cluster together with respect to partisanship and favorability to women. Some notable outliers that are scattered across the country and clustered together are New Mexico, Louisiana, Missouri, Nebraska, Kentucky, West Virginia, and New Hampshire.**
+
+
+From this clustering, we can see that the lowest proportion of states have split representation in the legislature and the worst representation and favorability to women. The highest proportion of states in this clustering are those whose representation is republican favored and has the second to worst representation of women. 
+
 * **Cluster 1**: States whose representation in the state legislature is Republican favored and has the second to worst representation of women. It is a tier below Cluster 2 and a tier higher than Cluster 3 in terms of "equality" for women.
 
 * **Cluster 2**: States whose representation in the state legislature is strongly Democratic favored and has the highest representation of women. These states also have the most "equality" for women, most access to abortion and health clinics. (Best in regards to our research question).
@@ -164,9 +169,9 @@ data %>%
         plot.caption = element_text(face = "italic", hjust = 0.5, size = 10))
 ```
 
-Comparing the two maps above, we find some surprising results. For example, the group of West Coast and some East Coast states that were coded as being in Cluster 2 - the best cluster - only have a strength of 2 for the legislation they have in place. Based on the clustering performed above, we would expect these states to have a strong legislation since they seem to be most progressive and have the most representation for women liberal ideals. Conversely, we see that states such as Florida, Mississippi and Georgia who were placed in Cluster 1 or Cluster 2 - the worse clusters - have much better law strengths. 
+Comparing the two maps above, we find some surprising results. For example, the group of West Coast and some East Coast states that were coded as being in Cluster 2 - the cluster that we may expect as yielding a result most progressive and favorable to women- only have a strength of 2 (requiring a rape conviction) for the legislation they have in place. Conversely, we see that states such as Florida, Mississippi and Georgia who were placed in Cluster 1 or Cluster 2 - the worst clusters - have much stronger legislation (requiring only clear and convincing evidence for termination). 
 
-There are many possible explanations for this effect. One of them may be that those states in which have lower "equality" for women may need to have stronger laws in place to protect them because of their need to "make-up" for their treatment towards women. (NEED EMMA FOR THIS PART)
+There are many possible explanations for this effect. One of them may be that those states in which have lower "equality" for women may need to have stronger laws in place to protect them because of their need to "make-up" for their treatment towards women. Another perhaps more plausible explanation is that our predictors, though indicative of mobilization for most legislative outcomes on other issues surrounding favorability to women, are insufficient. In other words, there is some other unexamined predictor that regardless of partisanship or ideology is moving states in one direction or another. We continue to analyze this issue in the section below.
 
 
 Bringing it all together and now accounting for the year in which the legislation in question was passed and the strength of the law, we re-run our clustering algorithm to see how states are similar to each other in a more hollistic view, accounting for both what we expected their attitudes towards this legislation to be and the reality for the legislation in these states. Again, we determined their to be 3 "natural" clusters and visualized these groups on the map once again.
@@ -220,11 +225,11 @@ data %>%
 
 The breakdown in groups is very similar to the original clustering analysis, but assigned to different clusters:
 
-* **Cluster 1**: States whose representation in the state legislature is Republican favored and has the second to worst representation of women. It is a tier below Cluster 3 (the best) and a tier higher than Cluster 3 (worst) in terms of "equality" for women and has the strongest law strength.
+* **Cluster 1**: States whose representation in the state legislature is Republican favored and has "medium" representation of women. It is a tier below Cluster 3 and a tier higher than Cluster 3 in terms of "equality" for women and has the strongest average law strength. We can see from the map that these states are scattered across the US, with concentrations in the southeast and midwest. 
 
-* **Cluster 2**: States whose representation in the state legislature is about split and has the worst resources, "equality" and representation for women, with an average law strength of 2 (Worst in our analysis).
+* **Cluster 2**: States whose representation in the state legislature is about split and has the worst resources, "equality" and representation for women, with an average law strength of 2. These states are spread throughout the lower middle and lower east of the country. 
 
-* **Cluster 3**: States whose representation in the state legislature is strongly favored towards Democratic and the most representation of women. These states have the most resources for women and the best "equality", with an average law strength of about 3 (Best in our analysis).
+* **Cluster 3**: States whose representation in the state legislature is strongly favored towards Democratic and the most representation of women. These states have the most resources for women and the best "equality", with an average law strength of about 3. These states are mainly concentrated on the west coast and northeast
 
 
 # Other visualizations/wrangling we will organize
