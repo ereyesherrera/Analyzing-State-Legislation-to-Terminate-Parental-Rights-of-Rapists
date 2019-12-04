@@ -29,6 +29,7 @@ library(gridExtra)
 library(sf)
 library(htmltools)
 library(shiny)
+library(DT)
 ```
 
 ```{r setup, echo=FALSE}
@@ -279,7 +280,7 @@ pal <- colorFactor("viridis",
 # Map
 leaflet(shp) %>%
   addTiles() %>%
-  setView(lng = -98.268082, lat = 41.125370, zoom = 3) %>%
+  setView(lng = -98.268082, lat = 41.125370, zoom = 2.5) %>%
   addPolygons(popup = state_popup, fillColor = ~pal(factor(data$law_strength)),
               stroke = 0.2, color = ~pal(factor(data$law_strength)), fillOpacity = 0.7, 
               smoothFactor = 0.5, 
@@ -293,6 +294,40 @@ leaflet(shp) %>%
             title = "Law Strength",
             position = "bottomright")
 ```
+
+We have also included an interactive version of our data set that allows the user to filter the data in any way, hosted on a Shiny App. To view this table in a separate web browser, visit [this page](https://ereyesherrera.shinyapps.io/exploring_table/).
+
+```{r exploring_table, eval=FALSE}
+
+ui <- fluidPage(dataTableOutput("dataTable"))
+
+server <- function(input, output) {
+  
+  output$dataTable <- DT::renderDataTable(
+    data %>%
+      mutate(State = factor(State), 
+             lgl_abortion_clinics = as.integer(lgl_abortion_clinics),
+             health_clinics = as.integer(health_clinics),
+             prop_equal_pay = as.integer(prop_equal_pay),
+             equal_pay_rank = as.integer(equal_pay_rank),
+             law_strength = as.integer(law_strength),
+             year_passage = as.integer(year_passage),
+             year_amend = as.integer(year_amend),
+             Senate = factor(Senate),
+             House = factor(House),
+             Governor = factor(Governor),
+             party = factor(party)), # data
+    class = "display nowrap compact", # style
+    filter = "top" # location of column filters
+  )
+
+}
+
+shinyApp(ui, server)
+```
+
+<iframe src ="https://ereyesherrera.shinyapps.io/exploring_table/" height=550px width=850px />
+
 
 The following tables show the breakdown of how many states have each of the five law strengths, as well as a table showing the states and their strength law and the color of the state at the time of passage. We see that the majority of the states have a law strength of 2 (rape conviction), followed by a law strength of 5.
 
@@ -546,13 +581,21 @@ data %>%
   pivot_wider(names_from = State, values_from = Values)
 ```
 
-```{r}
+We have included a Shiny app below that allows a user to compare states they are interested in looking at in the same way we compared the three states above. To view the app in a new windo, visit [this page](https://ereyesherrera.shinyapps.io/files/). It is important to note that we needed to remove the variable of `bill_name` from our original data because of an error that entries in that variable did not use UTF-8 characters. This can be remedied by saving the original data set to preserve special characters, but because it is one of the lesser important variables in our analysis, we have decided to leave it out here.
+
+```{r shiny app, eval=FALSE}
 shinyApp(
 
   ui <- fluidPage(
-    checkboxGroupInput("choices", label = "States:", choices = c(data$State)),
-    tableOutput(outputId = "table")
-  ),
+    h3(tags$u("Comparing Variables Across States")),
+    p(tags$i("Check the boxes for states you would like to compare. \
+       Uncheck the boxes to remove that state from the  table.")),
+    sidebarLayout(sidebarPanel(
+      checkboxGroupInput("choices", label = "States:", choices = c(data$State),
+                         selected = c("Minnesota", "California"))),
+    
+    mainPanel(tableOutput(outputId = "table")
+  ))),
 
   server <- function(input, output) {
     output$table = renderTable({
@@ -568,8 +611,9 @@ shinyApp(
   
 ```
 
+<iframe src ="https://ereyesherrera.shinyapps.io/files/" height=700px width=850px />
 
-This plot shows that states with the strongest legislation (lowest burden of proof) have, for the most part, the most favorable proportion of population to abortion clinics. Similarly, the states with the weakest legislation (highest burden of proof, requiring a rape conviction) have the worst proportion of population to abortion clinics. These results point to an interesting hypocrisy in ideological incentivizing across states. We might expect that states with very few abortion clinics (an indication of a very pro-life ideological base) would have greater law strength to incentivize women to have their babies, or to make sure that women who had already borne children instead of aborting were protected against having to co-parent with their assailants. On the converse side of the equation, states with more abortion clinics per person have greater law strength, which indicates a higher favorabiity to women regarding pro-choice. Whether women who have rape induced pregnancies keep or abort their babies, they have options. Interestingly, when we turn to the health clinic visualization, we see that these sharp divides are largely nonexistent. Regardless of law strength, states seem to have pretty decent proportions of women's health clinics per population, an indication of non-controversy.
+This plot below shows that states with the strongest legislation (lowest burden of proof) have, for the most part, the most favorable proportion of population to abortion clinics. Similarly, the states with the weakest legislation (highest burden of proof, requiring a rape conviction) have the worst proportion of population to abortion clinics. These results point to an interesting hypocrisy in ideological incentivizing across states. We might expect that states with very few abortion clinics (an indication of a very pro-life ideological base) would have greater law strength to incentivize women to have their babies, or to make sure that women who had already borne children instead of aborting were protected against having to co-parent with their assailants. On the converse side of the equation, states with more abortion clinics per person have greater law strength, which indicates a higher favorabiity to women regarding pro-choice. Whether women who have rape induced pregnancies keep or abort their babies, they have options. Interestingly, when we turn to the health clinic visualization, we see that these sharp divides are largely nonexistent. Regardless of law strength, states seem to have pretty decent proportions of women's health clinics per population, an indication of non-controversy.
 
 ```{r}
 g1 <- data %>% 
@@ -628,15 +672,19 @@ data %>%
 
 # References
 
-https://catalog.data.gov/dataset/tiger-line-shapefile-2017-nation-u-s-current-state-and-equivalent-national
-https://www.worldatlas.com/articles/us-states-by-population.html
-https://state.1keydata.com/state-population-density.php
-https://www.refinery29.com/en-us/2019/01/217375/abortion-clinics-laws-map
-https://lozierinstitute.org/health-clinics-nationwide-compared-to-planned-parenthood-centers/
-https://www.patriotsoftware.com/payroll/training/blog/states-with-paid-family-leave/
-http://www.ncsl.org/research/labor-and-employment/paid-family-leave-in-the-states.aspx
-https://www.aauw.org/resource/gender-pay-gap-by-state-and-congressional-district/
-https://www.vocativ.com/215942/these-13-states-still-make-exceptions-for-marital-rape/index.html
-https://www.prochoiceamerica.org/state
-https://www.cawp.rutgers.edu/state_fact_sheets/al
-https://www.congress.gov/bill/114th-congress/house-bill/1257
+* https://catalog.data.gov/dataset/tiger-line-shapefile-2017-nation-u-s-current-state-and-equivalent-national
+* https://www.worldatlas.com/articles/us-states-by-population.html
+* https://state.1keydata.com/state-population-density.php
+* https://www.refinery29.com/en-us/2019/01/217375/abortion-clinics-laws-map
+* https://lozierinstitute.org/health-clinics-nationwide-compared-to-planned-parenthood-centers/
+* https://www.patriotsoftware.com/payroll/training/blog/states-with-paid-family-leave/
+* http://www.ncsl.org/research/labor-and-employment/paid-family-leave-in-the-states.aspx
+* https://www.aauw.org/resource/gender-pay-gap-by-state-and-congressional-district/
+* https://www.vocativ.com/215942/these-13-states-still-make-exceptions-for-marital-rape/index.html
+* https://www.prochoiceamerica.org/state
+* https://www.cawp.rutgers.edu/state_fact_sheets/al
+* https://www.congress.gov/bill/114th-congress/house-bill/1257
+* https://stackoverflow.com/questions/47764096/adjust-the-size-of-an-embedded-shiny-app-within-rmarkdown-document
+* https://dev.to/awwsmm/reactive-datatables-in-r-with-persistent-filters-l26
+* https://stackoverflow.com/questions/32202965/filter-a-table-in-shiny
+* https://bookdown.org/yihui/rmarkdown/shiny-embedded.html

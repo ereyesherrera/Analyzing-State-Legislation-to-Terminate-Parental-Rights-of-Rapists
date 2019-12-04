@@ -1,0 +1,13 @@
+name: exploring_table
+title: exploring_table
+username:
+account: ereyesherrera
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1558733
+bundleId: 2638734
+url: https://ereyesherrera.shinyapps.io/exploring_table/
+when: 1575431554.03127
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: comparing_states.R|year_passage.gif|tl_2017_us_state

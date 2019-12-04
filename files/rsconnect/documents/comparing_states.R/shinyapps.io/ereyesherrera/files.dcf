@@ -1,0 +1,13 @@
+name: files
+title: files
+username:
+account: ereyesherrera
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1558460
+bundleId: 2638443
+url: https://ereyesherrera.shinyapps.io/files/
+when: 1575425667.31102
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: year_passage.gif|tl_2017_us_state
