@@ -669,7 +669,7 @@ data %>%
 
 <<<<<<< HEAD
 ```{r}
-data
+data %>% 
   ggplot(aes(x = State, y = equal_pay_rank, color = prop_equal_pay, 
              size = factor(law_strength))) +
   geom_point() +
