@@ -639,9 +639,8 @@ grid.arrange(g1, g2)
 
 
 
-*TODO: Explain the following visualizations*
 
-
+Paid Family Leave provides eligible employees job-protected, paid time off to: bond with a newly born, adopted or fostered child, care for a family member with a serious health condition, or assist loved ones when a spouse, domestic partner, child or parent is deployed abroad on active military service. Paid family leave tends to benefit new mothers more than any other demographic, as such, it can be seen as a factor embedded in a larger "favorability to women" variable. Currently, 8 states offer paid family leave. Of those 8, 6 of them require a rape conviction to terminate rapist's parental rights. Of the states that do not offer paid family leave, there seems to be no clear trend in either direction, probably by virtue of the fact that the overwhelming majority of states do not have paid family leave in place. The plot below reveals that paid family leave is perhaps not the best predictor of law strength. Given that the overwhelming majority of states do not offer paid family leave, of the small pool of states that we are working with, more that *do* offer paid family leave have a law strength of 2 than 5.  
 
 ```{r}
 data %>%
@@ -668,7 +667,7 @@ data %>%
 
 ```
 
-Paid Family Leave provides eligible employees job-protected, paid time off to: bond with a newly born, adopted or fostered child, care for a family member with a serious health condition, or assist loved ones when a spouse, domestic partner, child or parent is deployed abroad on active military service. Paid family leave tends to benefit new mothers more than any other demographic, as such, it can be seen as a factor embedded in a larger "favorability to women" variable. Currently, 8 states offer paid family leave. Of those 8, 6 of them require a rape conviction to terminate rapist's parental rights. Of the states that do not offer paid family leave, there seems to be no clear trend in either direction, probably by virtue of the fact that the overwhelming majority of states do not have paid family leave in place. The plot below reveals that paid family leave is perhaps not the best predictor of law strength. Given that the overwhelming majority of states do not offer paid family leave, of the small pool of states that we are working with, more that *do* offer paid family leave have a law strength of 2 than 5.  
+
 
 
 *TODO: More visualizations, wrap up section with general conclusions*
