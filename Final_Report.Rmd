@@ -173,7 +173,7 @@ Comparing the two maps, we find some surprising results. For example, states cod
 
 There are many possible explanations for this effect. One may be that those states which have lower "equality" for women may need to "make-up" for their treatment towards women through stronger legislation here. Another, perhaps more plausible explanation, is that our predictors, though indicative of mobilization for legislative outcomes on other issues surrounding favorability to women, are insufficient. In other words, there is some other unexamined predictor that, regardless of partisanship or ideology, is moving states in one direction or another. We continue to analyze this issue in the section below.
 
-Bringing it all together and now accounting for the year in which the legislation in question was passed and the strength of the law, we re-run our clustering algorithm to see how states are similar to each other in a more holistic view, accounting for both what we expected their attitudes towards this legislation to be and the reality for the legislation in these states. Again, we determined there to be 3 "natural" clusters and visualized these groups on the map and the composition of each available variable in each cluster.
+Bringing it all together and now accounting for the year of passage and strength of the law, we re-ran our clustering algorithm to see how states are similar to each other in a more holistic view. This accounted for both what we expected their attitudes towards this legislation to be and the actual legislation passed in these states. Again, we determined there to be 3 "natural" clusters and visualized these groups on the map and the composition of each available variable in each cluster.
 
 ```{r cluster_law}
 # Hierarchical Analysis using all information
@@ -223,15 +223,15 @@ my_cluster_data2 %>%
   summarize_all(list(mean = mean), na.rm = TRUE)
 ```
 
-The breakdown in groups is very similar to the original clustering analysis, but assigned to different clusters. These are the final clusters based on taking into account our chosen variables:
+The breakdown in groups is very similar to the original clustering analysis, but the clusters are now different. These are the final clusters based on taking into account our chosen variables:
 
 * **Cluster 1**: States whose representation in the state legislature is Republican favored and has "medium" representation of women. It is a tier below Cluster 3 and a tier higher than Cluster 3 in terms of "equality" for women and has the strongest average law strength. We can see from the map that these states are scattered across the US, with concentrations in the southeast and Midwest. 
 
-* **Cluster 2**: States whose representation in the state legislature is about split and has the worst resources, "equality" and representation for women, with an average law strength of 2. These states are spread throughout the lower middle and lower east of the country. 
+* **Cluster 2**: States whose representation in the state legislature is generally split and has the worst resources, "equality", and representation for women, with an average law strength of 2 (rape conviction). These states are spread throughout the lower middle and lower east of the country. 
 
-* **Cluster 3**: States whose representation in the state legislature is strongly favored towards Democratic and the most representation of women. These states have the most resources for women and the best "equality", with an average law strength of about 3. These states are mainly concentrated on the west coast and northeast.
+* **Cluster 3**: States whose representation in the state legislature is strongly favored towards Democratic and the most representation of women. These states have the most resources for women and the best "equality", with an average law strength of about 3 (ambiguous burden of proof). These states are mainly concentrated on the west coast and northeast.
 
-This cluster analysis has indicated how states are similar to each other with respect to their law strength and the variables that may be contributing to how states rule on this legislation. The biggest takeaway here is that the variables we have investigated were thought to have had some big influence on how legislation is treated, but this is not the case, as we see that states are grouping together in a different pattern than we expected. As such, there may be an underlying variable that we have not accounted for that is more responsible for how states rule on this legislation despite the importance of the variables we have chosen.
+This cluster analysis has indicated how states are similar to each other with respect to their law strength and the variables that may be contributing to how states rule on this legislation. The biggest takeaway here is that the variables we have investigated were thought to greatly influence how legislation is treated, but this is not the case, as we see that states are grouping together in a different pattern than we expected. As such, there may be an underlying variable that we have not accounted for that is more responsible for how states rule on this legislation, despite the importance of the variables we have chosen.
 
 # Analyzing Party and Strength of Legislation
 
@@ -329,7 +329,7 @@ shinyApp(ui, server)
 <iframe src ="https://ereyesherrera.shinyapps.io/exploring_table/" height=550px width=850px />
 
 
-The following tables show the breakdown of how many states have each of the five law strengths, as well as a table showing the states and their strength law and the color of the state at the time of passage. We see that the majority of the states have a law strength of 2 (rape conviction), followed by a law strength of 5.
+The following tables show the breakdown of how many states have each of the five law strengths, as well as a table showing the states and their strength law and the color of the state at the time of passage. We see that the majority of the states have a law strength of 2 (rape conviction), followed by a law strength of 5 (clear and convincing evidence).
 
 ```{r tables_law_strength}
 data %>%
