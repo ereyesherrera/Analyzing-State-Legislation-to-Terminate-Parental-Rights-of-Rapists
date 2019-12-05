@@ -149,7 +149,7 @@ From this map and table, we are able to visualize which states are similar in te
 
 * **Cluster 3**: States whose representation in the state legislature is generally split, with representation of women the lowest out of the three clusters and the worst in terms of "equality" for women. This is the worst in regards to our research question - this would mean that these states are assumed to have least favorable laws towards women.
 
-From this clustering, we see geographic groupings of the west coast and northeast, and another in the southeast and Midwestern states, with respect to partisanship and favorability to women. Some notable outliers that are scattered across the country and clustered together are New Mexico, Louisiana, Missouri, Nebraska, Kentucky, West Virginia, and New Hampshire. The lowest proportion of states have split representation in the legislature and the worst representation and favorability to women. The highest proportion of states in this clustering are those whose representation is Republican favored and has the second to worst representation of women. **COMEBACKTO. what does highest proportion mean?**
+From this clustering, we see geographic groupings of the west coast and northeast, and another in the southeast and Midwestern states, with respect to partisanship and favorability to women. Some notable outliers that are scattered across the country and clustered together are New Mexico, Louisiana, Missouri, Nebraska, Kentucky, West Virginia, and New Hampshire. There are seven states that have split representation in the legislature and the worst representation and favorability to women. Meanwhile, there are 14 states in a different cluster whose representation is Republican favored and has the second to worst representation of women.
 
 Taking into account the above metric in our cluster analysis, we wanted to compare states' *actual* legislation with how they appear on paper, based on the results of our hierarchical clustering). For this comparison, we created another map that shows the law strength for each state, with 1 being the "worst" (i.e.nothing in place) and 5 being the best (i.e. clear and convincing). We would expect the states in Cluster 2 to have the most favorable laws and those in Cluster 3 to have the least favorable laws.
 
@@ -664,11 +664,42 @@ data %>%
 
 ```
 
+```{r}
+data
+  ggplot(aes(x = State, y = equal_pay_rank, color = prop_equal_pay, 
+             size = factor(law_strength))) +
+  geom_point() +
+  coord_flip() +
+  theme_minimal() + 
+  labs(y = "Equal Pay Rank",
+       title = "Pay Equality Rate for Women in Each State", 
+       color = "Proportion of Equal Pay", size = "Law Strength") +
+  theme(axis.text.y = element_text(size = 6),
+        plot.title = element_text(face = "bold")) +
+  scale_color_viridis_c()
+```
+
+```{r}
+data %>%
+  ggplot(aes(x = party, y = perc_women, color = factor(law_strength))) +
+  geom_point() +
+  scale_color_viridis_d() +
+  theme_minimal() +
+  labs(x = "Party At Time of Legislation Passage", y = "Percent Women in Both Chambers",
+       color = "Law Strength", 
+       title = "Analyzing the Percent of Women in State Legislative Chambers",
+       subtitle = "By Party and Law Strength") +
+  theme(plot.title = element_text(face = "bold"))
+```
+
+
 *TODO: More visualizations, wrap up section with general conclusions*
 
 # Conclusion
 
 *TODO: Write conclusion, future considerations, etc.*
+
+- When variables were collected (2019 vs, when law was passed)
 
 # References
 
