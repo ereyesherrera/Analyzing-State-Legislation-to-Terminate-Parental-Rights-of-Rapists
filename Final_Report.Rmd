@@ -667,9 +667,9 @@ data %>%
 
 ```
 
-<<<<<<< HEAD
+
 ```{r}
-data
+data %>%
   ggplot(aes(x = State, y = equal_pay_rank, color = prop_equal_pay, 
              size = factor(law_strength))) +
   geom_point() +
@@ -695,9 +695,6 @@ data %>%
        subtitle = "By Party and Law Strength") +
   theme(plot.title = element_text(face = "bold"))
 ```
-=======
-
->>>>>>> ba7fc900cb8653e17ba45cb052135158a26f50cd
 
 
 *TODO: More visualizations, wrap up section with general conclusions*
