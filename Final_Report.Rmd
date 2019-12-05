@@ -78,6 +78,8 @@ data <- data %>%
   mutate(post_2015 = fct_collapse(post_2015, Yes = c("Yes", "yes")))
 
 data
+
+view(data)
 ```
 
 First, we were interested in understanding how states were compared to each other based on their state legislatures and other variables that may account for how they enact the legislation. As such, we used hierarchical clustering analysis to find structure in our data and determine states that are similar within the above parameters. Our research question focuses on factors that lead to the passage and strength of legislation; as a result, we do not factor in the strength of the law or the year in which it was passed or amended. We hoped to see the relationship between our predictive variables and the subsequent strength of the law that was passed.
