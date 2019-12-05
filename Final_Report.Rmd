@@ -38,10 +38,10 @@ knitr::opts_chunk$set(results = "hold", fig.show = "hold", fig.align = "center",
 
 # Introduction
 
-Currently, every state but Minnesota has legislation to terminate the parental rights of rapists. However, legislation varies considerably from state to state with respect to timing and scope. While some states passed legislation in the 90s, many have waited until after 2015 to pass or amend their laws. Another key variant across states is the strength of the legislation, which we define on a five point scale (1= no legislation at all, 2= requiring a rape conviction for termination, 3= ambiguous burden of proof, 4= beyond a reasonable doubt, 5= clear and convincing evidence). Incongruities across the country beg the question: What accounts for these legislative differences? In this project, we consider how a state’s favorability to and representation of women, partisan divides, ideology, and policy-making context (“focusing events” and framing) influence legislation’s presence and scope. This data was compiled by Emma Higgins for her honors thesis using a litany of legislative and policy data sets. Her group members have kindly obliged her obsession and agreed to dedicate fifty hours to analyzing her niche data set!
+Currently, every state but Minnesota has legislation to terminate the parental rights of rapists. However, this legislation varies considerably from state to state with respect to timing and scope. While some passed legislation in the 90s, many have waited until after 2015 to pass or amend their laws. Another key variant across states is the strength of the legislation, which we define on a five point scale (1= no legislation at all, 2= requiring a rape conviction for termination, 3= ambiguous burden of proof, 4= beyond a reasonable doubt, 5= clear and convincing evidence). Incongruities across the country beg the question: What accounts for these legislative differences? In this project, we consider how a state’s partisan divides, policy-making context ("focusing events" and framing), and favorability to, and representation of, women influce legislation's presense and scope. This data was compiled by Emma Higgins for her honors thesis using a litany of legislative and policy data sets. Her group members have kindly obliged her obsession and agreed to dedicate fifty hours to analyzing her niche data set!
 
 ## Codebook
-This section is dedicated to defining the variables we have used in our analysis.
+This section provides definitions of the variables we have used in our analysis.
 
 Variable                    Meaning
 --------------------------  --------
@@ -49,22 +49,22 @@ Variable                    Meaning
 `pop`                       size of population
 `lgl_abortion_clinics`      Number of legal abortion clinics available to women in the state
 `health_clinics`            women's health clinics that do not provide abortion services
-`prop_abortion`             the ratio of people per abortion clinic in the state (bigger numbers mean presumably less access)
-`prop_health`               the ratio of people per women's health clinic in the state (bigger numbers mean presumably less access)
+`prop_abortion`             the ratio of people per abortion clinic in the state (larger numbers presumably means less access)
+`prop_health`               the ratio of people per women's health clinic in the state (larger numbers presumably means less access)
 `paid_fam_leave`            whether a state has a law requiring an employer to issue paid family leave (women are disproportionately affected by paid family leave or lack thereof because they're the ones having babies!)
-`prop_equal_pay`            how many cents women make to the dollar that men make in each state
+`prop_equal_pay`            how many cents women make to the dollar compared to men in each state
 `equal_pay_rank`            how a state ranks nationally according to equal pay laws
 `marital_rape_except`       whether a state has loopholes in sexual assault in the cases of marriage
-`law strength`              metric to assign to the strength of the legislation: 5 = clear and convincing, 4 = beyond reasonable doubt, 3 = not specified, 2 = conviction, 1 = nothing				
+`law strength`              metric assigned to the strength of the legislation: 5 = clear and convincing, 4 = beyond reasonable doubt, 3 = ambiguous burden of proof, 2 = conviction, 1 = does not exist				
 `year_passage`              when the bill (to terminate parental rights in cases of rape that resulted in child's conception) was initially passed
-`year_amend`                when/if the bill was amended to expand restrictions from requiring a rape conviction to clear and convincing evidence
+`year_amend`                when/if the bill was amended to expand restrictions from requiring a rape conviction (level 2) to clear and convincing evidence (level 5)
 `post_2015`                 whether the bill was passed before or after 2015, when the Obama Administration issued grant money to any state that made this issue a legislative priority
 `bill_name`                 name of legislation passed in the state
-`perc_women`                percent of women in both chambers combined at the times of the bill's passage 
-`perc_demo_senate`	        percent of members in the state senate that are of the Democratic party at the time of the bill's passage
-`perc_demo_house`	          percent of members in the state house that are of the Democratic party at the time of the bill's passage
-`Senate`	                  party that controlled state senate during the passage of the legislation; D = Democrat, R = Republican, P = Split, B = Bipartisan, N/A = Does not apply (legislation not passed)
-`House`	                    party that controlled state house during the passage of the legislation
+`perc_women`                percent of women in both state legislative chambers at the times of the bill's passage 
+`perc_demo_senate`	        percent of members in the state senate that were members of the Democratic party at the time of the bill's passage
+`perc_demo_house`	          percent of members in the state house that were members of the Democratic party at the time of the bill's passage
+`Senate`	                  party that controlled the state senate during the passage of the legislation; D = Democrat, R = Republican, P = Split, B = Bipartisan, N/A = Does not apply (legislation not passed)
+`House`	                    party that controlled the state house during the passage of the legislation
 `Governor`                  governor's party affiliation
 
 # Contextual Framing
@@ -80,17 +80,18 @@ data <- data %>%
 data
 ```
 
-First, to begin answering our research question, we first were interested in understanding how states are similar in their state legislatures and other variables that may account for how they enact the legislation we are interested in looking at. As such, we use hierarchical clustering analysis to find structure in our data and determine states that are similar with regards to the features outlined above. Our research question focuses on understanding factors that may influence the timing and strength of the legislation; as a result, we do not factor in the actual strength of the law we coded above or the year in which it was passed or when it was amended. This is because we are interested in seeing if the variables in this data set have a relationship with what the strength of the legislation actually is.
+First, we were interested in understanding how states were compared to each other based on their state legislatures and other variables that may account for how they enact the legislation. As such, we used hierarchical clustering analysis to find structure in our data and determine states that are similar within the above parameters. Our research question focuses on factors that lead to the passage and strength of legislation; as a result, we do not factor in the strength of the law or the year in which it was passed or amended. We hoped to see the relationship between our predictive variables and the subsequent strength of the law that was passed.
 
-For this analysis, we have to convert the variables that are factors into numeric data. As such, this is how the variables were coded:
+For this analysis, we had to convert the variables that were factors into numeric data. This is how the variables were coded:
 
 * `Senate`, `House` & `Governor` variables: 1 = Bipartisan (B), 2 = Democratic (D), 3 = Purple (P), 4 = Legislation not passed (N/A), 5 = Republican (R)
 
 * `paid_fam_leave` & `marital_rape_except` variables: 1 = "No", 2 = "Yes"
 
-Additionally, it is also important to note why we also excluded the variables that indicate population of the state, number of legal abortion clinics available to women in the state and the number of women's health clinics in the state. We did not want to size of the state to affect the results of the clustering analysis. So to account for this, we included the variables of `prop_abortion` and `prop_health` in the algorithm because this places all states on the same scale by computing the ratio of people per abortion clinic and people to health clinics, respectively. These are the most important variables since we are trying to find similarities in resources available, and not simply the size of the state, for example. We also excluded the variable which describes the name of the bill.
+Additionally, it is also important to note that we also excluded the variables for population of the state, number of legal abortion clinics available to women, and the number of women's health clinics. We did not want the size of the state to affect the results of the clustering analysis. To account for this, we included the variables of `prop_abortion` and `prop_health` in the algorithm because this places all states on the same scale by computing the ratio of people per abortion clinic and people to health clinics, respectively. These variables allow us to compare similarities in the resources available to states and not simply their size. We also excluded the name of the bill as we did not find it relevant to this analysis.
 
-Coding the variables above as such will allow us to see the break down of these variables when summarizing variable means across clusters once clusters have been determined, as seen in the table below. This will help us see the composition of each variable in each cluster - or in simpler terms, the "weight" of each variable in ech cluster. We used the complete linkage approach to find similarities between clusters of states, which is defined as the maximum distance between any 2 cases between any 2 clusters. After running the hierarchical clustering algorithm and visualizing the resultant dendrogram (i.e. when clusters merge and which states merge into what clusters), we determined that the appropriate number of natural clusters was 3 and better visualized these four clusters on a states map, as seen below.
+Coding the variables above allowed us to see the break down of these variables when summarizing variable means across clusters. This showed us the composition of each variable in each cluster - or in simpler terms, the "weight" of each variable in each cluster. We used the complete linkage approach to find similarities between clusters of states, defined as the maximum distance between any 2 cases between any 2 clusters. After running the hierarchical clustering algorithm and visualizing the resultant dendrogram (i.e. when clusters merge and which states merge into what clusters), we determined that the appropriate number of natural clusters was 3 and better visualized these four clusters on a states map, as seen below. 
+[**COMEBACKTO.is it four or 3?**]
 
 ```{r cluster law}
 # Intitial clustering w/o taking into account year passage
@@ -141,17 +142,17 @@ my_cluster_data %>%
   summarize_all(list(mean = mean), na.rm = TRUE)
 ```
 
-From this map and table, we are able to visualize the which states are similar in terms of their representation in the state legislatures and the resources available in each state that may affect how legislation is enforced. We can define the three clusters seen above as the following, based on the means for each variable within each cluster:
+From this map and table, we are able to visualize which states are similar in terms of their representation in the state legislatures and the resources available and how that may affect the adoption of legislation. We defined the three clusters seen above as the following, based on the means for each variable within each cluster:
 
-* **Cluster 1**: States whose representation in the state legislature is Republican favored and has the second to worst representation of women. It is a tier below Cluster 2 and a tier higher than Cluster 3 in terms of "equality" for women.
+* **Cluster 1**: States whose representation in the state legislature is Republican favored and has the second to worst representation of women. It is below Cluster 2 and higher than Cluster 3 in terms of "equality" for women.
 
-* **Cluster 2**: States whose representation in the state legislature is strongly Democratic favored and has the highest representation of women. These states also have the most "equality" for women, most access to abortion and health clinics. (Best in regards to our research question).
+* **Cluster 2**: States whose representation in the state legislature is strongly Democratic favored and has the highest representation of women. These states also have the most "equality" for women, most access to abortion and health clinics. (Best in regards to our research question). **COMEBACKTO.this means assumed to have most favorable laws?** 
 
-* **Cluster 3**: States whose representation in the state legislature is for the most part split, with representation of women the lowest out of the three clusters and the worst in terms of "equality" for women. (Worst in regards to our research question).
+* **Cluster 3**: States whose representation in the state legislature is generally split, with representation of women the lowest out of the three clusters and the worst in terms of "equality" for women. (Worst in regards to our research question). **COMEBACKTO.this means assumed to have least favorable laws?**
 
-From this clustering, we see that states on the west coast and in the northeast, and states in the southeast and Midwestern to cluster together with respect to partisanship and favorability to women. Some notable outliers that are scattered across the country and clustered together are New Mexico, Louisiana, Missouri, Nebraska, Kentucky, West Virginia, and New Hampshire. The lowest proportion of states have split representation in the legislature and the worst representation and favorability to women. The highest proportion of states in this clustering are those whose representation is Republican favored and has the second to worst representation of women. 
+From this clustering, we see geographic groupings of the west coast and northeast, and another in the southeast and Midwestern states, with respect to partisanship and favorability to women. Some notable outliers that are scattered across the country and clustered together are New Mexico, Louisiana, Missouri, Nebraska, Kentucky, West Virginia, and New Hampshire. The lowest proportion of states have split representation in the legislature and the worst representation and favorability to women. The highest proportion of states in this clustering are those whose representation is Republican favored and has the second to worst representation of women. **COMEBACKTO. what does highest proportion mean?**
 
-Taking into account the metric above in our cluster analysis, we want to compare how each state *actually* rules on this legislation to how they seem that they would on paper based on the variables above (and thus the results of hierarchical clustering). As such, we created another map that shows the law strength for each state, with 1 being the "worst" (i.e.nothing in place) and 5 being the best (i.e. clear and convincing).
+Taking into account the above metric in our cluster analysis, we wanted to compare states' *actual* legislation with how they appear on paper, based on the results of our hierarchical clustering). For this comparison, we created another map that shows the law strength for each state, with 1 being the "worst" (i.e.nothing in place) and 5 being the best (i.e. clear and convincing). We would expect the states in Cluster 2 to have the most favorable laws and those in Cluster 3 to have the least favorable laws.
 
 ```{r map_of_law}
 # Mapping states and law strength
@@ -169,11 +170,11 @@ data %>%
         plot.caption = element_text(face = "italic", hjust = 0.5, size = 10))
 ```
 
-Comparing the two maps above, we find some surprising results. For example, the group of West Coast and some East Coast states that were coded as being in Cluster 2 - the cluster that we may expect as yielding a result most progressive and favorable to women- only have a strength of 2 (requiring a rape conviction) for the legislation they have in place. Conversely, we see that states such as Florida, Mississippi and Georgia who were placed in Cluster 1 or Cluster 2 - the worst clusters - have much stronger legislation (requiring only clear and convincing evidence for termination). 
+Comparing the two maps, we find some surprising results. For example, states coded as Cluster 2 - the cluster that expected to have the laws that were most progressive and favorable to women- only have a strength of 2 (requiring a rape conviction). Conversely, we see that states such as Florida, Mississippi and Georgia who were placed in Cluster 1 or Cluster 2 - those that had least favorable conditions for women - have much stronger legislation (requiring only clear and convincing evidence for termination, level 5). 
 
-There are many possible explanations for this effect. One of them may be that those states in which have lower "equality" for women may need to have stronger laws in place to protect them because of their need to "make-up" for their treatment towards women. Another perhaps more plausible explanation is that our predictors, though indicative of mobilization for most legislative outcomes on other issues surrounding favorability to women, are insufficient. In other words, there is some other unexamined predictor that regardless of partisanship or ideology is moving states in one direction or another. We continue to analyze this issue in the section below.
+There are many possible explanations for this effect. One may be that those states which have lower "equality" for women may need to "make-up" for their treatment towards women through stronger legislation here. Another, perhaps more plausible explanation, is that our predictors, though indicative of mobilization for legislative outcomes on other issues surrounding favorability to women, are insufficient. In other words, there is some other unexamined predictor that, regardless of partisanship or ideology, is moving states in one direction or another. We continue to analyze this issue in the section below.
 
-Bringing it all together and now accounting for the year in which the legislation in question was passed and the strength of the law, we re-run our clustering algorithm to see how states are similar to each other in a more holistic view, accounting for both what we expected their attitudes towards this legislation to be and the reality for the legislation in these states. Again, we determined their to be 3 "natural" clusters and visualized these groups on the map and the composition of each available variable in each cluster.
+Bringing it all together and now accounting for the year in which the legislation in question was passed and the strength of the law, we re-run our clustering algorithm to see how states are similar to each other in a more holistic view, accounting for both what we expected their attitudes towards this legislation to be and the reality for the legislation in these states. Again, we determined there to be 3 "natural" clusters and visualized these groups on the map and the composition of each available variable in each cluster.
 
 ```{r cluster_law}
 # Hierarchical Analysis using all information
