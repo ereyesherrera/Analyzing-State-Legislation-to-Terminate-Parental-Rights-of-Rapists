@@ -669,11 +669,8 @@ data %>%
 
 
 ```{r}
-<<<<<<< HEAD
+
 data %>% 
-=======
-data %>%
->>>>>>> 9b2055975cfddbbba882a1b2292160d98f046124
   ggplot(aes(x = State, y = equal_pay_rank, color = prop_equal_pay, 
              size = factor(law_strength))) +
   geom_point() +
@@ -690,7 +687,7 @@ data %>%
 ```{r}
 data %>%
   ggplot(aes(x = party, y = perc_women, color = factor(law_strength))) +
-  geom_point() +
+  geom_text(aes(label = State)) +
   scale_color_viridis_d() +
   theme_minimal() +
   labs(x = "Party At Time of Legislation Passage", y = "Percent Women in Both Chambers",
