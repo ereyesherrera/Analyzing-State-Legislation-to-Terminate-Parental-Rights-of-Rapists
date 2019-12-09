@@ -684,6 +684,10 @@ data %>%
   scale_color_viridis_c()
 ```
 
+The viz below examines the equal pay rank 
+
+
+
 ```{r}
 data %>%
   ggplot(aes(x = party, y = perc_women, color = factor(law_strength))) +
