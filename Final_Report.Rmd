@@ -30,6 +30,7 @@ library(sf)
 library(htmltools)
 library(shiny)
 library(DT)
+library(ggrepel)
 ```
 
 ```{r setup, echo=FALSE}
@@ -392,7 +393,7 @@ ggplot(passed_law_states, aes(x = `Color of State during Passage of Law`, y = `N
   scale_fill_manual(values = c("blue", "red", "purple", "gray"))
 ```
 
-Six (40%) “blue” (majority democratic legislators in the state legislature), 2 (13.3%) “purple” (split between democratic and republican legislators in the state legislature) and 7 (46.6%) “red” (majority republican legislators in the state legislature) states use the clear and convincing standard. There seems to be no significant variation along party lines with regard to a higher burden of proof.
+Morepver, six (40%) “blue” (majority democratic legislators in the state legislature), 2 (13.3%) “purple” (split between democratic and republican legislators in the state legislature) and 7 (46.6%) “red” (majority republican legislators in the state legislature) states use the clear and convincing standard. There seems to be no significant variation along party lines with regard to a higher burden of proof.
 
 ```{r clr_convinc_party}
 data %>%
@@ -569,18 +570,6 @@ data %>%
 
 # Analyzing Specific Variables
 
-*TODO: Comparing three states with different levels of partisanship.*
-
-It is interesting to note in this table that though these states vary significantly in terms of favorability to women, ideology, and party in power, they all have legislation that requires a rape conviction. These results as outlined above could perhaps indicate the presence of a predictor variable we cannot account for--the presence or absence of a focusing event.
-
-```{r}
-data %>%
-  mutate_all(as.character) %>%
-  filter(State %in% c("Nebraska", "California", "Alabama")) %>%
-  pivot_longer(-State, names_to = "Variables", values_to = "Values") %>%
-  pivot_wider(names_from = State, values_from = Values)
-```
-
 We have included a Shiny app below that allows a user to compare states they are interested in looking at in the same way we compared the three states above. To view the app in a new windo, visit [this page](https://ereyesherrera.shinyapps.io/files/). It is important to note that we needed to remove the variable of `bill_name` from our original data because of an error that entries in that variable did not use UTF-8 characters. This can be remedied by saving the original data set to preserve special characters, but because it is one of the lesser important variables in our analysis, we have decided to leave it out here.
 
 ```{r shiny app, eval=FALSE}
@@ -613,7 +602,19 @@ shinyApp(
 
 <iframe src ="https://ereyesherrera.shinyapps.io/files/" height=700px width=850px />
 
-This plot below shows that states with the strongest legislation (lowest burden of proof) have, for the most part, the most favorable proportion of population to abortion clinics. Similarly, the states with the weakest legislation (highest burden of proof, requiring a rape conviction) have the worst proportion of population to abortion clinics. These results point to an interesting hypocrisy in ideological incentivizing across states. We might expect that states with very few abortion clinics (an indication of a very pro-life ideological base) would have greater law strength to incentivize women to have their babies, or to make sure that women who had already borne children instead of aborting were protected against having to co-parent with their assailants. On the converse side of the equation, states with more abortion clinics per person have greater law strength, which indicates a higher favorabiity to women regarding pro-choice. Whether women who have rape induced pregnancies keep or abort their babies, they have options. Interestingly, when we turn to the health clinic visualization, we see that these sharp divides are largely nonexistent. Regardless of law strength, states seem to have pretty decent proportions of women's health clinics per population, an indication of non-controversy.
+The states we ended up deciding to compare were Alabama, California and Nebraska as seen below. It is interesting to note in this table that though these states vary significantly in terms of favorability to women, ideology, and party in power, they all have legislation that requires a rape conviction. These results as outlined above could perhaps indicate the presence of a predictor variable we cannot account for - the presence or absence of a focusing event.
+
+```{r}
+data %>%
+  mutate_all(as.character) %>%
+  filter(State %in% c("Nebraska", "California", "Alabama")) %>%
+  pivot_longer(-State, names_to = "Variables", values_to = "Values") %>%
+  pivot_wider(names_from = State, values_from = Values)
+```
+
+Furthermore, this plot below shows that states with the strongest legislation (lowest burden of proof) have, for the most part, the most favorable proportion of population to abortion clinics. Similarly, the states with the weakest legislation (highest burden of proof, requiring a rape conviction) have the worst proportion of population to abortion clinics. These results point to an interesting hypocrisy in ideological incentivizing across states. We might expect that states with very few abortion clinics (an indication of a very pro-life ideological base) would have greater law strength to incentivize women to have their babies, or to make sure that women who had already borne children instead of aborting were protected against having to co-parent with their assailants. 
+
+On the converse side of the equation, states with more abortion clinics per person have greater law strength, which indicates a higher favorabiity to women regarding pro-choice. Whether women who have rape induced pregnancies keep or abort their babies, they have options. Interestingly, when we turn to the health clinic visualization, we see that these sharp divides are largely nonexistent. Regardless of law strength, states seem to have pretty decent proportions of women's health clinics per population, an indication of non-controversy.
 
 ```{r}
 g1 <- data %>% 
@@ -637,10 +638,9 @@ g2 <- data %>%
 grid.arrange(g1, g2)
 ```
 
+Paid Family Leave provides eligible employees job-protected, paid time off to: bond with a newly born, adopted or fostered child, care for a family member with a serious health condition, or assist loved ones when a spouse, domestic partner, child or parent is deployed abroad on active military service. Paid family leave tends to benefit new mothers more than any other demographic, as such, it can be seen as a factor embedded in a larger "favorability to women" variable. 
 
-
-
-Paid Family Leave provides eligible employees job-protected, paid time off to: bond with a newly born, adopted or fostered child, care for a family member with a serious health condition, or assist loved ones when a spouse, domestic partner, child or parent is deployed abroad on active military service. Paid family leave tends to benefit new mothers more than any other demographic, as such, it can be seen as a factor embedded in a larger "favorability to women" variable. Currently, 8 states offer paid family leave. Of those 8, 6 of them require a rape conviction to terminate rapist's parental rights. Of the states that do not offer paid family leave, there seems to be no clear trend in either direction, probably by virtue of the fact that the overwhelming majority of states do not have paid family leave in place. The plot below reveals that paid family leave is perhaps not the best predictor of law strength. Given that the overwhelming majority of states do not offer paid family leave, of the small pool of states that we are working with, more that *do* offer paid family leave have a law strength of 2 than 5.  
+Currently, 8 states offer paid family leave. Of those 8, 6 of them require a rape conviction to terminate rapist's parental rights. Of the states that do not offer paid family leave, there seems to be no clear trend in either direction, probably by virtue of the fact that the overwhelming majority of states do not have paid family leave in place. The plot below reveals that paid family leave is perhaps not the best predictor of law strength. Given that the overwhelming majority of states do not offer paid family leave, of the small pool of states that we are working with, more that *do* offer paid family leave have a law strength of 2 than 5.  
 
 ```{r}
 data %>%
@@ -667,6 +667,7 @@ data %>%
 
 ```
 
+*TODO: Explain two visualizations below*
 
 ```{r}
 
@@ -677,7 +678,8 @@ data %>%
   coord_flip() +
   theme_minimal() + 
   labs(y = "Equal Pay Rank",
-       title = "Pay Equality Rate for Women in Each State", 
+       title = "Equal Pay Rank for Women in Each State",
+       subtitle = "Accounting for Proportion of Equal Pay & Law Strength",
        color = "Proportion of Equal Pay", size = "Law Strength") +
   theme(axis.text.y = element_text(size = 6),
         plot.title = element_text(face = "bold")) +
@@ -691,18 +693,21 @@ The viz below examines the equal pay rank
 ```{r}
 data %>%
   ggplot(aes(x = party, y = perc_women, color = factor(law_strength))) +
-  geom_text(aes(label = State)) +
+  geom_point() +
+  geom_label_repel(aes(label = State), seed = 112, point.padding = 0.1, size = 2) +
   scale_color_viridis_d() +
   theme_minimal() +
   labs(x = "Party At Time of Legislation Passage", y = "Percent Women in Both Chambers",
        color = "Law Strength", 
        title = "Analyzing the Percent of Women in State Legislative Chambers",
        subtitle = "By Party and Law Strength") +
-  theme(plot.title = element_text(face = "bold"))
+  theme(plot.title = element_text(face = "bold"), 
+        axis.text.x = element_text(colour = c("blue", "purple", "red", "gray")))
+
 ```
 
 
-*TODO: More visualizations, wrap up section with general conclusions*
+*TODO: Wrap up section with general conclusions*
 
 # Conclusion
 
