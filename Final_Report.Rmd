@@ -694,8 +694,7 @@ data %>%
   scale_color_viridis_c()
 ```
 
-The viz below examines the equal pay rank and proportion of equal pay for each state against law strength. It is essential to note here that proportions and rankings are updated to 2018 numbers, which for some states that passed legislation in the '90, like California, Texas, Missouri and Pennsilvania, are not necessarily reflective of the climate at the time of passage.
-
+The viz below examines the equal pay rank and proportion of equal pay for each state against law strength. It is essential to note here that proportions and rankings are updated to 2018 numbers, which for some states that passed legislation in the '90s, like California, Texas, Missouri and Pennsilvania, is not necessarily reflective of the climate at the time of passage. The clusterings that we see with the gradient tell us that, as we might have intutively expected, states with higher proportions of equal pay have better rankings in terms of their equal pay laws, and vise verse. What the vizualisation reveals in terms of law strength is that these variables are not necessarily great predictors for the scope of the legislation. Smaller and larger dots are in no particular order or color across the vizualisation.
 
 
 ```{r}
