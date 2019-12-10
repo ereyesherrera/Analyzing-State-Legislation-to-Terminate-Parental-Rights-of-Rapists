@@ -714,8 +714,11 @@ data %>%
 
 ```
 
+In this visualization we looked at how the % of women in state legislatures affected law strength, broken up by political party. A few groupings immediately stand out: the states with law strength 5 are all grouped together, with the exception of Mississippi. The blue states with more than 30% women have the highest law strength. In addition, it is important to note that 4 states with low law strengths, CA, MO, TX, and PA were all passed in the 90s. They have lower % of women and lower law strength but they were passed much earlier than other states. 
+Overall, there seems to be a positive relationship between the amount of women in the state legislature and the highest law strength. However, for law strengths 1-4, there seems to be more variability.  
 
-*TODO: Wrap up section with general conclusions*
+
+From all of these visualizations, we see some general trends that might lead a state to adopt a law strength of 5. A higher  availability of abortion and health clinics seems to be clearly related to stronger laws. And there does seem to be a weak positive relationship between the percentage of women legislators and law strength. However, across all of the variables there does not seem to be a single clear predictor of law strength. This speaks to the complicated nature of how legislation is ultimately passed. In the next section we will discuss this complexity in greater depth.  
 
 # Conclusion
 
