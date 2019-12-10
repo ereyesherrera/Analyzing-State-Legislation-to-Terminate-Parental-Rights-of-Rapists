@@ -39,7 +39,7 @@ knitr::opts_chunk$set(results = "hold", fig.show = "hold", fig.align = "center",
 
 # Introduction
 
-Currently, every state but Minnesota has legislation to terminate the parental rights of rapists. However, this legislation varies considerably from state to state with respect to timing and scope. While some passed legislation in the 90s, many have waited until after 2015 to pass or amend their laws. Another key variant across states is the strength of the legislation, which we define on a five point scale (1= no legislation at all, 2= requiring a rape conviction for termination, 3= ambiguous burden of proof, 4= beyond a reasonable doubt, 5= clear and convincing evidence). Incongruities across the country beg the question: What accounts for these legislative differences? In this project, we consider how a state’s partisan divides, policy-making context ("focusing events" and framing), and favorability to, and representation of, women influce legislation's presense and scope. This data was compiled by Emma Higgins for her honors thesis using a litany of legislative and policy data sets. Her group members have kindly obliged her obsession and agreed to dedicate fifty hours to analyzing her niche data set!
+Currently, every state but Minnesota has legislation to terminate the parental rights of rapists. However, this legislation varies considerably from state to state with respect to timing and scope. While some passed legislation in the 90s, many have waited until after 2015 to pass or amend their laws. Another key variant across states is the strength of the legislation, which we define on a five point scale (1= no legislation at all, 2= requiring a rape conviction for termination, 3= ambiguous burden of proof, 4= beyond a reasonable doubt, 5= clear and convincing evidence). Incongruities across the country beg the question: What accounts for these legislative differences? In this project, we consider how a state’s partisan divides, policy-making context ("focusing events" and framing), and favorability to, and representation of, women influence legislation's presence and scope. This data was compiled by Emma Higgins for her honors thesis using a litany of legislative and policy data sets. Her group members have kindly obliged her obsession and agreed to dedicate fifty hours to analyzing her niche data set!
 
 ## Codebook
 This section provides definitions of the variables we have used in our analysis.
@@ -496,7 +496,7 @@ data %>%
 
 =======
 >>>>>>> fe59c136691db587b230d335858f8e683a8dab0b
-Overall, this section tells us that party lines do not act as compelling predictors with respect to timing of passage, but that there are some intruging correlations concerning scope/strength. The most notable finding from this section is that the ratio of partisan states requiring a rape conviction (6:12) is much more pronounced than the ratio of partisan states requiring clear and convincing evidence (6:7), which speaks more to ideology than to partisanship. States with republican controlled legislatures tend to be more conservative with respect to family values and often pro-father's rights, and therefore less inclined to terminate a father's parental rights without "sufficient" evidence of unfitness.
+Overall, this section tells us that party lines do not act as compelling predictors with respect to timing of passage, but that there are some intriguing correlations concerning scope/strength. The most notable finding from this section is that the ratio of partisan states requiring a rape conviction (6:12) is much more pronounced than the ratio of partisan states requiring clear and convincing evidence (6:7), which speaks more to ideology than to partisanship. States with republican controlled legislatures tend to be more conservative with respect to family values and often pro-father's rights, and therefore less inclined to terminate a father's parental rights without "sufficient" evidence of unfitness.
 
 # Change Over Time
 
@@ -564,9 +564,7 @@ data %>%
   scale_color_viridis_d() 
 ```
 
-There are seven states that have amended their legislation since initial passage, Colorado, Connecticutt, Hawaii,  Illinois, Missouri, Pennsilvania, and Texas. Colorado first passed legislation requiring a rape conviction in 2013, with a quick turnaround in 2014 of allowing for clear and convincing evidence to suffice. Connecticutt on the other hand, took 15 years (2001-2016) to amend their legislation. Hawaii passed legislation in 2013, but amended in 2016 to forgo the requirement of a rape conviction in favor of the lower burden of proof, clear and convincing evidence. Illinois' amendment in 2016, after the bill's passage in 2013, neither strengthened nor weakened the law, but presented an ambiguous burden of proof. Missouri amended the law in 2016 to clear and convincing evidence, though there remains ambiguity, with an initial passage in 1997. Pennsilvania was the earliest of all states to pass legislation in 1992, with an unspecified burden of proof, and when the state amended in 2015, the burden of proof was increased to a rape conviction. Texas followed the same trajectory, passing initial legislation in 1997, and amending in 2017.
-Notable takeaways here are that Colorado, Connecticutt, and Hawaii, all democratically controlled at the time of amendment, amended to a lower burden of proof, whereas Pennsilvania and Texas, both republican controlled, amended to a higher burden of proof.
-
+There are seven states that have amended their legislation since initial passage, Colorado, Connecticut, Hawaii,  Illinois, Missouri, Pennsylvania, and Texas. 
 
 ```{r}
 data %>%
@@ -574,11 +572,40 @@ data %>%
   filter(year_amend != "NA")
 ```
 
+Colorado first passed legislation requiring a rape conviction in 2013, with a quick turnaround in 2014 of allowing for clear and convincing evidence to suffice. Connecticut on the other hand, took 15 years (2001-2016) to amend their legislation. Hawaii passed legislation in 2013, but amended in 2016 to forgo the requirement of a rape conviction in favor of the lower burden of proof, clear and convincing evidence. Illinois' amendment in 2016, after the bill's passage in 2013, neither strengthened nor weakened the law, but presented an ambiguous burden of proof. Missouri amended the law in 2016 to clear and convincing evidence, though there remains ambiguity, with an initial passage in 1997. Pennsylvania was the earliest of all states to pass legislation in 1992, with an unspecified burden of proof, and when the state amended in 2015, the burden of proof was increased to a rape conviction. Texas followed the same trajectory, passing initial legislation in 1997, and amending in 2017.
+
+```{r}
+# Looking only at states that amended law
+amend_passed <- data %>%
+  replace_na(list(year_amend = "NA")) %>%
+  filter(year_amend != "NA") %>%
+  select(year_amend, year_passage, State, law_strength) %>%
+  mutate(year_amend = as.integer(year_amend), year_passage = as.integer(year_passage)) %>%
+  pivot_longer(cols = c("year_amend", "year_passage"), names_to = "Type", values_to = "Year") %>%
+  mutate(Type = factor(Type)) 
+
+# Renaming levels
+levels(amend_passed$Type) <- list(Amended = "year_amend", `First Passed` = "year_passage")
+
+# Visualizations
+amend_passed %>%
+  ggplot(aes(x = State, y = Year, color = Type)) +
+  geom_point() +
+  theme_minimal() +
+  geom_label_repel(aes(label = Year), seed = 112, point.padding = 0.1, size = 2) +
+  labs(title = "States With Amended Laws") +
+  theme(plot.title = element_text(face = "bold"))
+  
+```
+
+Notable takeaways here are that Colorado, Connecticut, and Hawaii, all democratically controlled at the time of amendment, amended to a lower burden of proof, whereas Pennsylvania and Texas, both republican controlled, amended to a higher burden of proof.
+
+
 *TODO: Conclusions/ wrap up general ideas from this section*
 
 # Analyzing Specific Variables
 
-We have included a Shiny app below that allows a user to compare states they are interested in looking at in the same way we compared the three states above. To view the app in a new windo, visit [this page](https://ereyesherrera.shinyapps.io/files/). It is important to note that we needed to remove the variable of `bill_name` from our original data because of an error that entries in that variable did not use UTF-8 characters. This can be remedied by saving the original data set to preserve special characters, but because it is one of the lesser important variables in our analysis, we have decided to leave it out here.
+We have included a Shiny app below that allows a user to compare states they are interested in looking at in the same way we compared the three states above. To view the app in a new window, visit [this page](https://ereyesherrera.shinyapps.io/files/). It is important to note that we needed to remove the variable of `bill_name` from our original data because of an error that entries in that variable did not use UTF-8 characters. This can be remedied by saving the original data set to preserve special characters, but because it is one of the lesser important variables in our analysis, we have decided to leave it out here.
 
 ```{r shiny app, eval=FALSE}
 shinyApp(
