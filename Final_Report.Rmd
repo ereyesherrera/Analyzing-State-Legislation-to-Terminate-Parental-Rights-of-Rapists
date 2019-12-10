@@ -694,7 +694,7 @@ data %>%
   scale_color_viridis_c()
 ```
 
-The viz below examines the equal pay rank 
+The viz below examines the equal pay rank and proportion of equal pay for each state against law strength. It is essential to note here that proportions and rankings are updated to 2018 numbers, which for some states that passed legislation in the '90, like California, Texas, Missouri and Pennsilvania, are not necessarily reflective of the climate at the time of passage.
 
 
 
