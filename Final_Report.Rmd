@@ -564,7 +564,7 @@ data %>%
   scale_color_viridis_d() 
 ```
 
-There are seven states that have amended their legislation since initial passage, Colorado, Connecticutt, Hawaii,  Illinois, Missouri, Pennsilvania, and Texas. Colorado first passed legislation requiring a rape conviction in 2013, with a quick turnaround in 2014 of allowing for clear and convincing evidence to suffice. Connecticutt on the other hand, took 15 years (2001-2016) to amend their legislation. Hawaii passed legislation in 2013, but amended in 2016 to forgo the requirement of a rape conviction in favor of the lower burden of proof, clear and convincing evidence. Illinois' amendment in 2016, after the bill's passage in 2013, neither strengthened nor weakened the law, but presented an ambiguous burden of proof. Missouri amended the law in 2016 to clear and convincing evidence, though there remains ambiguity, with an initial passage in 1997. Pennsilvania was the earliest of all states to pass legislation in 1992, with an unspecified burden of proof, and when the state amended in 2015, the burden of proof was increased to a rape conviction. Texas followed the same trajectory, passing initial legislation in 1997, and amending in 2017.
+There are seven states that have amended their legislation since initial passage, Colorado, Connecticutt, Hawaii,  Illinois, Missouri, Pennsylvania, and Texas. Colorado first passed legislation requiring a rape conviction in 2013, with a quick turnaround in 2014 of allowing for clear and convincing evidence to suffice. Connecticutt on the other hand, took 15 years (2001-2016) to amend their legislation. Hawaii passed legislation in 2013, but amended in 2016 to forgo the requirement of a rape conviction in favor of the lower burden of proof, clear and convincing evidence. Illinois' amendment in 2016, after the bill's passage in 2013, neither strengthened nor weakened the law, but presented an ambiguous burden of proof. Missouri amended the law in 2016 to clear and convincing evidence, though there remains ambiguity, with an initial passage in 1997. Pennsylvania was the earliest of all states to pass legislation in 1992, with an unspecified burden of proof, and when the state amended in 2015, the burden of proof was increased to a rape conviction. Texas followed the same trajectory, passing initial legislation in 1997, and amending in 2017.
 Notable takeaways here are that Colorado, Connecticutt, and Hawaii, all democratically controlled at the time of amendment, amended to a lower burden of proof, whereas Pennsilvania and Texas, both republican controlled, amended to a higher burden of proof.
 
 
@@ -574,7 +574,7 @@ data %>%
   filter(year_amend != "NA")
 ```
 
-*TODO: Conclusions/ wrap up general ideas from this section*
+Data visualizations representing law passage and strength over time indicate stronger and more abundant laws protecting rape victim's rights to child custody since 2010.  Though it is difficult to clearly realte the evidence of focusing events such as the CNN stories and The Rape Survivor Child Custody Act as heavily impacting the passage of laws, there is an undeniable trend of states passing landmark custody legislation after around 2010.  Regarding focus events impacting law strength, states that ammended their laws after 2010 showed multiple trends of favoring a higher calliber of the law power. This could be because of the multiple CNN stories impacts on the public concious or the legal influence of The Rape Survivor Child Custody of 2015.   
 
 # Analyzing Specific Variables
 
@@ -694,7 +694,8 @@ data %>%
   scale_color_viridis_c()
 ```
 
-The viz below examines the equal pay rank and proportion of equal pay for each state against law strength. It is essential to note here that proportions and rankings are updated to 2018 numbers, which for some states that passed legislation in the '90s, like California, Texas, Missouri and Pennsilvania, is not necessarily reflective of the climate at the time of passage. The clusterings that we see with the gradient tell us that, as we might have intutively expected, states with higher proportions of equal pay have better rankings in terms of their equal pay laws, and vise verse. What the vizualisation reveals in terms of law strength is that these variables are not necessarily great predictors for the scope of the legislation. Smaller and larger dots are in no particular order or color across the vizualisation.
+The viz below examines the equal pay rank and proportion of equal pay for each state against law strength. It is essential to note here that proportions and rankings are updated to 2018 numbers, which for some states that passed legislation in the '90, like California, Texas, Missouri and Pennsilvania, are not necessarily reflective of the climate at the time of passage.
+
 
 
 ```{r}
@@ -713,19 +714,12 @@ data %>%
 
 ```
 
-In this visualization we looked at how the % of women in state legislatures affected law strength, broken up by political party. A few groupings immediately stand out: the states with law strength 5 are all grouped together, with the exception of Mississippi. The blue states with more than 30% women have the highest law strength. In addition, it is important to note that 4 states with low law strengths, CA, MO, TX, and PA were all passed in the 90s. They have lower % of women and lower law strength but they were passed much earlier than other states. 
-Overall, there seems to be a positive relationship between the amount of women in the state legislature and the highest law strength. However, for law strengths 1-4, there seems to be more variability.  
 
-
-From all of these visualizations, we see some general trends that might lead a state to adopt a law strength of 5. A higher  availability of abortion and health clinics seems to be clearly related to stronger laws. And there does seem to be a weak positive relationship between the percentage of women legislators and law strength. However, across all of the variables there does not seem to be a single clear predictor of law strength. This speaks to the complicated nature of how legislation is ultimately passed. In the next section we will discuss this complexity in greater depth.  
+*TODO: Wrap up section with general conclusions*
 
 # Conclusion
 
 *TODO: Write conclusion, future considerations, etc.*
-
-On the whole, the factors we have analyzed cannot be classified as key predictors for passing legislation to terminate rapists' parental rights. What makes predicting how legislators will vote on this particular issue so difficult is that it converges the aforementioned categories of women’s issues and parental rights in general with the unique addition of sexual assault. While looking at how states address domestic abuse in custody cases is a start, the reality is that rape is widely underreported and even more rarely prosecuted. Because the evidence is less concrete than for other crimes that might be presented in a custody battle, such as domestic abuse, the gray area is larger. Furthermore, peoples’ attitudes toward rape vary widely based on ideology, gender, religion, and personal experience, so there are more factors to consider when trying to predict how a particular legislator will vote. Finally, the issue of rape-induced pregnancy is what Thomas Birkland (1998) refers to as “existing but dormant,” meaning that it may have always been a problem, but it has only gained traction in state legislatures in the past two decades, and it remains under the radar of most people outside of the public-policy realm (Birkland, p. 55).  
-While we found some interesting correlations throughout this project, and some results that may end up being significant for research on policy work, or perhaps parental rights/sexual assault legislation more generally, our varied figures and inconsistencies indicate that a project of this scope may benefit from a more qualitative data collection. A lawyer, lobbyist, legislator, public policy actor or constituent may be able to speak more to the process leading to passage than quantitative data would show. Some future considerations include: any variables that we, as students and not experienced politicians, have not accounted for, any local, statewide, or national news stories that impacted the passage of the legislation, any constituent or interest group outreach that was unknown to the public, any focusing events that existed but seemed not to have an effect on the legislature, the degree to which the specter of false accusations hovered over the legislature and perhaps contributed to more hesitancy, as well as any noteworthy loopholes/exceptions in relevant legislation.
-
 
 - When variables were collected (2019 vs, when law was passed)
 
