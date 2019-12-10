@@ -491,8 +491,6 @@ data %>%
   scale_fill_viridis_d()
 ```
 
-*TO DO: Wrap up general conclusions from this section*
-
 Overall, this section tells us that party lines do not act as compelling predictors with respect to timing of passage, but that there are some intruging correlations concerning scope/strength. The most notable finding from this section is that the ratio of partisan states requiring a rape conviction (6:12) is much more pronounced than the ratio of partisan states requiring clear and convincing evidence (6:7), which speaks more to ideology than to partisanship. States with republican controlled legislatures tend to be more conservative with respect to family values and often pro-father's rights, and therefore less inclined to terminate a father's parental rights without "sufficient" evidence of unfitness.
 
 # Change Over Time
@@ -536,8 +534,6 @@ data %>%
        fill = "Law Strength", title = "States and Their Law Strengths",
        subtitle = "Passing Legislation before vs. after 2015")
 ```
-
-
 
 
 Here, we can more closely see the proportion of states that passed legislation each year after 2010. As indicated with our theory of focusing events in the previous analysis, the years with the largest amount of legislature mobilization are those in or following 2015. 2013 also stands out as a year in which many states moved to pass or amend the legislation, which again, could point to the CNN's story's impact. It is interesting to note, as we saw in a previous visualization, that of the majority of states who have passed legislation in the last decade, many have opted for clear and convincing evidence as the standard, while prior to 2010, only one state (Connecticut) passed legislation with the lowest burden of proof in criminal court. With percentages, we can see this idea even more clearly: There are only 15 states that use “clear and convincing evidence” as a burden of proof for terminating parental rights of rapists, and 13 of those states (86.6%) passed legislation **after** 2015.
