@@ -393,7 +393,7 @@ ggplot(passed_law_states, aes(x = `Color of State during Passage of Law`, y = `N
   scale_fill_manual(values = c("blue", "red", "purple", "gray"))
 ```
 
-Morepver, six (40%) “blue” (majority democratic legislators in the state legislature), 2 (13.3%) “purple” (split between democratic and republican legislators in the state legislature) and 7 (46.6%) “red” (majority republican legislators in the state legislature) states use the clear and convincing standard. There seems to be no significant variation along party lines with regard to a higher burden of proof.
+Moreover, six (40%) “blue” (majority democratic legislators in the state legislature), 2 (13.3%) “purple” (split between democratic and republican legislators in the state legislature) and 7 (46.6%) “red” (majority republican legislators in the state legislature) states use the clear and convincing standard. There seems to be no significant variation along party lines with regard to a higher burden of proof.
 
 ```{r clr_convinc_party}
 data %>%
@@ -491,7 +491,7 @@ data %>%
   scale_fill_viridis_d()
 ```
 
-*TO DO: Wrap up general conclusions from this section*
+
 
 Overall, this section tells us that party lines do not act as compelling predictors with respect to timing of passage, but that there are some intruging correlations concerning scope/strength. The most notable finding from this section is that the ratio of partisan states requiring a rape conviction (6:12) is much more pronounced than the ratio of partisan states requiring clear and convincing evidence (6:7), which speaks more to ideology than to partisanship. States with republican controlled legislatures tend to be more conservative with respect to family values and often pro-father's rights, and therefore less inclined to terminate a father's parental rights without "sufficient" evidence of unfitness.
 
@@ -563,9 +563,9 @@ data %>%
   scale_color_viridis_d() 
 ```
 
+There are seven states that have amended their legislation since initial passage, Colorado, Connecticutt, Hawaii,  Illinois, Missouri, Pennsilvania, and Texas. Colorado first passed legislation requiring a rape conviction in 2013, with a quick turnaround in 2014 of allowing for clear and convincing evidence to suffice. Connecticutt on the other hand, took 15 years (2001-2016) to amend their legislation. Hawaii passed legislation in 2013, but amended in 2016 to forgo the requirement of a rape conviction in favor of the lower burden of proof, clear and convincing evidence. Illinois' amendment in 2016, after the bill's passage in 2013, neither strengthened nor weakened the law, but presented an ambiguous burden of proof. Missouri amended the law in 2016 to clear and convincing evidence, though there remains ambiguity, with an initial passage in 1997. Pennsilvania was the earliest of all states to pass legislation in 1992, with an unspecified burden of proof, and when the state amended in 2015, the burden of proof was increased to a rape conviction. Texas followed the same trajectory, passing initial legislation in 1997, and amending in 2017.
+Notable takeaways here are that Colorado, Connecticutt, and Hawaii, all democratically controlled at the time of amendment, amended to a lower burden of proof, whereas Pennsilvania and Texas, both republican controlled, amended to a higher burden of proof.
 
-
-*TODO: Explain states that have amended law*
 
 ```{r}
 data %>%
