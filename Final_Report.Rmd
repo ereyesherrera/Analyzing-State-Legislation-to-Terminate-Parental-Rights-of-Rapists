@@ -736,6 +736,8 @@ data %>%
 
 ```
 
+All in all, analyzing specific variables in our data set as it pertains to a state's law strength reveal that there is really no distinguishable pattern in how states are deciding to rule on this problem despite some variables reflecting perfectly what we would expect in terms of representation and resources for women and the legislaion in question. Though these variables represent important factors to consider when discussing women's rights and resources available to them, we observed when comparing three very different states with the same law strength that there must be un underlying driving force in how the legislation is being treated. These variables are only the beginning when understanding this issue and serve as a basis for how states need to improve.
+
 # Conclusion
 
 On the whole, the factors we have analyzed cannot be classified as key predictors for passing legislation to terminate rapists' parental rights. What makes predicting how legislators will vote on this particular issue so difficult is that it converges the aforementioned categories of women’s issues and parental rights in general with the unique addition of sexual assault. While looking at how states address domestic abuse in custody cases is a start, the reality is that rape is widely under-reported and even more rarely prosecuted. Because the evidence is less concrete than for other crimes that might be presented in a custody battle, such as domestic abuse, the gray area is larger. Furthermore, peoples’ attitudes toward rape vary widely based on ideology, gender, religion, and personal experience, so there are more factors to consider when trying to predict how a particular legislator will vote.
