@@ -1,5 +1,5 @@
 ---
-title: "Analyzing State Legislation for Parental Rights of Rapists"
+title: "Analyzing State Legislation to Terminate Parental Rights of Rapists"
 author: 
 - "Emma Higgins, Max Danielewicz, Will Hamlin, Edwin Reyes Herrera"
 - "STATS 112 Final Project"
@@ -234,7 +234,7 @@ The breakdown in groups is very similar to the original clustering analysis, but
 
 This cluster analysis has indicated how states are similar to each other with respect to their law strength and the variables that may be contributing to how states rule on this legislation. The biggest takeaway here is that the variables we have investigated were thought to greatly influence how legislation is treated, but this is not the case, as we see that states are grouping together in a different pattern than we expected. As such, there may be an underlying variable that we have not accounted for that is more responsible for how states rule on this legislation, despite the importance of the variables we have chosen.
 
-# Analyzing Party and Strength of Legislation
+# Partisanship as a Predictor for Law Strength
 
 Now that we are familiar with how states pattern on this legislation with respect to the variables that may be influencing the results, we focus our analysis on the relationship between the legislation strength and specific variables - in particular here, between the party of a state during the time of passage and the law strength. We would expect states that lean towards being more liberal would have better protection for women, which is what this section is dedicated in investigating.
 
@@ -536,6 +536,23 @@ data %>%
 
 Here, we can more closely see the proportion of states that passed legislation each year after 2010. As indicated with our theory of focusing events in the previous analysis, the years with the largest amount of legislature mobilization are those in or following 2015. 2013 also stands out as a year in which many states moved to pass or amend the legislation, which again, could point to the CNN's story's impact. It is interesting to note, as we saw in a previous visualization, that of the majority of states who have passed legislation in the last decade, many have opted for clear and convincing evidence as the standard, while prior to 2010, only one state (Connecticut) passed legislation with the lowest burden of proof in criminal court. With percentages, we can see this idea even more clearly: There are only 15 states that use “clear and convincing evidence” as a burden of proof for terminating parental rights of rapists, and 13 of those states (86.6%) passed legislation **after** 2015.
 
+```{r, eval=FALSE}
+data %>%
+  arrange(year_passage) %>%
+  ggplot(aes(y = State, x = year_passage, label = State, color = factor(law_strength))) +
+  geom_text(size = 2.5) +
+  theme_minimal() +
+  labs(x = "Year Legislation Passed", color = "Law Strength", 
+       title = "When Each State Passed Legislation", 
+       caption = "Note: Minnesota not included; only state that has not passed any legislation") +
+  theme(axis.text.y = element_blank(),
+        legend.position = "bottom",
+        plot.title = element_text(face = "bold"), 
+        plot.caption = element_text(face = "italic", hjust = 0.5)) +
+  scale_x_continuous(breaks = seq(1990, 2020, 2)) +
+  scale_color_brewer(palette = "Dark2") + transition_states(year_passage)+ shadow_trail()
+```
+
 ```{r gif_law_passage, dpi=600}
 knitr::include_graphics("files/year_passage.gif")
 ```
@@ -554,7 +571,7 @@ data %>%
         plot.title = element_text(face = "bold"), 
         plot.caption = element_text(face = "italic", hjust = 0.5)) +
   scale_x_continuous(breaks = seq(1990, 2020, 2)) +
-  scale_color_viridis_d() 
+  scale_color_brewer(palette = "Dark2")
 ```
 
 There are seven states that have amended their legislation since initial passage, Colorado, Connecticut, Hawaii,  Illinois, Missouri, Pennsylvania, and Texas. 
@@ -718,14 +735,14 @@ data %>%
   scale_color_viridis_c()
 ```
 
-Another surprising finding is that the percentage of women in both chambers of a state legislature does not necessarily lead to a better law strength, especially when also considering the party at the time of legislation. We can see that this may be the case for Blue states, where there seems to be a relationship between the percentage of women in the state legislature and law strength, but the relationship is much more complicated for Red states. As such, we are again left to wonder other factors that are driving states to push for a better law strength.
+Another surprising finding is that the percentage of women in both chambers of a state legislature does not necessarily lead to a better law strength, especially when also considering the party at the time of legislation. We can see that this may be the case for Blue states, where there seems to be a relationship between the percentage of women in the state legislature and law strength, but the relationship is much more complicated for Red states. For Blue states specifically, we can notice that states in which have 30 or more percent of women in both state legislative chambers at the times of the bill’s passage also have a law strength of five, showing the relationship between the two variables. However, for red states, the relationship between the two variables is much more mixed. As such, we are again left to wonder other factors that are driving states to push for a better law strength.
 
 ```{r}
 data %>%
   ggplot(aes(x = party, y = perc_women, color = factor(law_strength))) +
   geom_point() +
   geom_label_repel(aes(label = State), seed = 112, point.padding = 0.1, size = 2) +
-  scale_color_viridis_d() +
+  scale_color_brewer(palette="Dark2") +
   theme_minimal() +
   labs(x = "Party At Time of Legislation Passage", y = "Percent Women in Both Chambers",
        color = "Law Strength", 
@@ -736,7 +753,7 @@ data %>%
 
 ```
 
-All in all, analyzing specific variables in our data set as it pertains to a state's law strength reveal that there is really no distinguishable pattern in how states are deciding to rule on this problem despite some variables reflecting perfectly what we would expect in terms of representation and resources for women and the legislaion in question. Though these variables represent important factors to consider when discussing women's rights and resources available to them, we observed when comparing three very different states with the same law strength that there must be un underlying driving force in how the legislation is being treated. These variables are only the beginning when understanding this issue and serve as a basis for how states need to improve.
+All in all, analyzing specific variables in our data set as it pertains to a state's law strength reveal that there is really no distinguishable pattern in how states are deciding to rule on this problem despite some variables reflecting perfectly what we would expect in terms of representation and resources for women and the legislation in question. Though these variables represent important factors to consider when discussing women's rights and resources available to them, we observed when comparing three very different states with the same law strength that there must be an underlying driving force in how the legislation is being treated. These variables are only the beginning when understanding this issue and serve as a basis for how states need to improve.
 
 # Conclusion
 
