@@ -73,7 +73,7 @@ Variable                    Meaning
 The following loads the data and removes an unneeded variable that carried over from when we compiled this data in Excel. In addition, it also fixes an input error in the `post_2015` variable, in which we only want two levels: "Yes" and "No".
 
 ```{r data}
-data <- read_csv("Honors_stats_updated_nov18_2.csv")
+data <- read_csv("files/data/Honors_stats_updated_nov18_2.csv")
 data <- data %>%
   select(-X22) %>%
   mutate(post_2015 = fct_collapse(post_2015, Yes = c("Yes", "yes")))
